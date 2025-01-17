@@ -1,4 +1,4 @@
-# Degrees-of-Lewdity-Edit
+# DoLEdit
 Degrees of Lewdity edit script (WIP)
 
 This is a usettings.js file that adds a menu to easily edit stats and settings in the game Degrees of Lewdity. I made this script as I wanted to have fun in the game without completely ruining the chance of getting Feats, as the in-game cheats remove Feat gain.
