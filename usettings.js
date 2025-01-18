@@ -2,7 +2,6 @@
 const DoLEdit = {
 	"menu": {
 		"button":null,
-		"container":null,
 		"overlay":null,
 		"title":null,
 		"content":null,
@@ -28,33 +27,27 @@ const DoLEdit = {
 };
 
 // Grab the normal buttons so we can disable/enable them as needed
-let buttons = document.getElementsByClassName("macro-button");
-for(let i=0; i<8; i++){
-	DoLEdit.native.menubuttons.push(buttons[i]);
-}
+// let buttons = document.getElementsByClassName("macro-button");
+// for(let i=0; i<8; i++){
+// 	DoLEdit.native.menubuttons.push(buttons[i]);
+// }
 
-// Create button, copy base game UI
+// Create button, copy base game UI, but position it in the bottom right.
 DoLEdit.menu.button = document.createElement("button");
 DoLEdit.menu.button.setAttribute("class","link-internal macro-button");
+DoLEdit.menu.button.setAttribute("style","position:fixed; right:0em; bottom:0em; max-width:initial; width:5em;");
 DoLEdit.menu.button.setAttribute("type","button");
 DoLEdit.menu.button.setAttribute("role","button");
 DoLEdit.menu.button.setAttribute("tabindex","0");
 DoLEdit.menu.button.setAttribute("onclick","DoLOpenMenu()");
 DoLEdit.menu.button.appendChild(document.createTextNode("DoLEdit"));
-document.getElementById("overlayButtons").appendChild(DoLEdit.menu.button);
+document.body.appendChild(DoLEdit.menu.button);
 
-// Copy the original overlay. Create a duplicate to not interfere with existing game systems.
-DoLEdit.menu.container = document.createElement("div");
-// We don't want to duplicate the ID, so we use our own and inherit the styles
-DoLEdit.menu.container.setAttribute("id","DoLEditMenu")
-DoLEdit.menu.container.setAttribute("style","position:fixed; z-index:999; top:0; right:0; width:-webkit-calc(100% - 17.6em); width:-moz-calc(100% - 17.6em); width:calc(100% - 17.6em); height:100%; pointer-events:all; backdrop-filter:blur(3px);");
-DoLEdit.menu.container.setAttribute("class","customOverlayContainer no-numberify hidden");
-//DoLEdit.menu.container.setAttribute("onclick","DoLCloseMenu()");
-
+// Create menu
 DoLEdit.menu.overlay = document.createElement("div");
-DoLEdit.menu.overlay.setAttribute("style","display:block; position:absolute; z-index:1000; top:10px; right:10px; bottom:10px; left:10px; width:auto; max-width:1000px; height:auto; line-height:1.5em; text-align:left;");
-DoLEdit.menu.overlay.setAttribute("class","customOverlay hidden");
-DoLEdit.menu.container.appendChild(DoLEdit.menu.overlay);
+DoLEdit.menu.overlay.setAttribute("style","display:block; position:fixed; right:6em; bottom:0em; width:101em; height:20em; line-height:1.5em; text-align:left;");
+DoLEdit.menu.overlay.setAttribute("class","hidden");
+document.body.appendChild(DoLEdit.menu.overlay);
 
 DoLEdit.menu.title = document.createElement("div");
 DoLEdit.menu.title.setAttribute("style","display:flex; flex-wrap:wrap; align-items:center; padding:0.5rem; padding-bottom:0;");
@@ -84,20 +77,20 @@ DoLEdit.menu.closebutton.setAttribute("onclick","DoLCloseMenu()");
 DoLEdit.menu.tablist.appendChild(DoLEdit.menu.closebutton);
 
 // Content for the overlay
-let table = document.createElement("table");
-table.setAttribute("style","border-top:1px solid white; border-right:1px solid white; width:100%;");
-DoLEdit.menu.content.appendChild(table);
+let DoLTable = document.createElement("table");
+DoLTable.setAttribute("style","border-top:1px solid white; border-right:1px solid white; width:100%;");
+DoLEdit.menu.content.appendChild(DoLTable);
 
-let tbody = document.createElement("tbody");
-table.appendChild(tbody);
+let DoLTBody = document.createElement("tbody");
+DoLTable.appendChild(DoLTBody);
 
-let tr = document.createElement("tr");
-tr.setAttribute("style","border-bottom:1px solid white;");
-tbody.appendChild(tr);
+let DoLTR = document.createElement("tr");
+DoLTR.setAttribute("style","border-bottom:1px solid white;");
+DoLTBody.appendChild(DoLTR);
 
 let debttd = document.createElement("td");
 debttd.setAttribute("style","border-left:1px solid white; width:40%;");
-tr.appendChild(debttd);
+DoLTR.appendChild(debttd);
 
 DoLEdit.menu.inputs.debt = document.createElement("input");
 DoLEdit.menu.inputs.debt.setAttribute("name","DoLEditDebt");
@@ -116,7 +109,7 @@ debttd.appendChild(debtbutton);
 debtbutton.appendChild(document.createTextNode("Debt"));
 
 // Place the new overlay below the old one
-document.getElementsByClassName("passage")[0].appendChild(DoLEdit.menu.container);
+// document.getElementsByClassName("passage")[0].appendChild(DoLEdit.menu.container);
 
 
 function DoLOpenMenu(){
@@ -124,13 +117,13 @@ function DoLOpenMenu(){
 	closeOverlay();
 	
 	// Disable the other buttons so we can't open the normal menu
-	for(let i=0; i<DoLEdit.native.menubuttons.length; i++){
-		DoLEdit.native.menubuttons[i].setAttribute("disabled","true");
-		DoLEdit.native.menubuttons[i].classList.remove("macro-button-selected");
-	}
+	// for(let i=0; i<DoLEdit.native.menubuttons.length; i++){
+	// 	DoLEdit.native.menubuttons[i].setAttribute("disabled","true");
+	// 	DoLEdit.native.menubuttons[i].classList.remove("macro-button-selected");
+	// }
 
 	// Reveal the overlay
-	DoLEdit.menu.container.classList.remove("hidden");
+	// DoLEdit.menu.container.classList.remove("hidden");
 	DoLEdit.menu.overlay.classList.remove("hidden");
 
 	// Change the function on the button to close instead of open
@@ -142,12 +135,12 @@ function DoLOpenMenu(){
 
 function DoLCloseMenu(){
 	// Re-enable the other buttons
-	for(let i=0; i<DoLEdit.native.menubuttons.length; i++){
-		DoLEdit.native.menubuttons[i].removeAttribute("disabled");
-	}
+	// for(let i=0; i<DoLEdit.native.menubuttons.length; i++){
+	// 	DoLEdit.native.menubuttons[i].removeAttribute("disabled");
+	// }
 	
 	// Hide the overlay
-	DoLEdit.menu.container.classList.add("hidden");
+	// DoLEdit.menu.container.classList.add("hidden");
 	DoLEdit.menu.overlay.classList.add("hidden");
 
 	// Set the button back to open
