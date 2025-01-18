@@ -5,8 +5,7 @@ const DoLE = {
 		"menu":null,
 		"tablist":null,
 		"tab":[],
-		"content":[],
-		"debt":null
+		"content":[]
 	},
 	"inputs": {
 		"debt":null
@@ -50,32 +49,23 @@ DoLE.el.tablist.setAttribute("class","tab");
 DoLETitleBar.appendChild(DoLE.el.tablist);
 
 // Tabs
-DoLE.el.tab.push(document.createElement("button"));
-DoLE.el.tab[0].setAttribute("class","link-internal macro-button tab-selected");
-DoLE.el.tab[0].setAttribute("type","button");
-DoLE.el.tab[0].setAttribute("role","button");
-DoLE.el.tab[0].setAttribute("tabindex","0");
-DoLE.el.tab[0].setAttribute("onclick","DoLSwitchTab(0)");
+for(let i=0; i<4; i++){
+	DoLE.el.tab.push(document.createElement("button"));
+	DoLE.el.tab[i].setAttribute("class","link-internal macro-button");
+	DoLE.el.tab[i].setAttribute("type","button");
+	DoLE.el.tab[i].setAttribute("role","button");
+	DoLE.el.tab[i].setAttribute("tabindex","0");
+	DoLE.el.tab[i].setAttribute("onclick","DoLSwitchTab("+i+")");
+	DoLE.el.tablist.appendChild(DoLE.el.tab[i]);
+}
+// First tab is always selected initially
+DoLE.el.tab[0].classList.add("tab-selected");
+
+// Tab names
 DoLE.el.tab[0].appendChild(document.createTextNode("Game"));
-DoLE.el.tablist.appendChild(DoLE.el.tab[0]);
-
-DoLE.el.tab.push(document.createElement("button"));
-DoLE.el.tab[1].setAttribute("class","link-internal macro-button");
-DoLE.el.tab[1].setAttribute("type","button");
-DoLE.el.tab[1].setAttribute("role","button");
-DoLE.el.tab[1].setAttribute("tabindex","0");
-DoLE.el.tab[1].setAttribute("onclick","DoLSwitchTab(1)");
 DoLE.el.tab[1].appendChild(document.createTextNode("Stats"));
-DoLE.el.tablist.appendChild(DoLE.el.tab[1]);
-
-DoLE.el.tab.push(document.createElement("button"));
-DoLE.el.tab[2].setAttribute("class","link-internal macro-button");
-DoLE.el.tab[2].setAttribute("type","button");
-DoLE.el.tab[2].setAttribute("role","button");
-DoLE.el.tab[2].setAttribute("tabindex","0");
-DoLE.el.tab[2].setAttribute("onclick","DoLSwitchTab(2)");
 DoLE.el.tab[2].appendChild(document.createTextNode("Body"));
-DoLE.el.tablist.appendChild(DoLE.el.tab[2]);
+DoLE.el.tab[3].appendChild(document.createTextNode("Social"));
 
 // Close button
 let DoLEClose = document.createElement("div");
@@ -86,10 +76,16 @@ DoLEClose.setAttribute("onclick","DoLCloseMenu()");
 DoLE.el.tablist.appendChild(DoLEClose);
 
 // Content
-DoLE.el.content[0] = document.createElement("div");
-DoLE.el.content[0].setAttribute("style","position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);");
-DoLE.el.menu.appendChild(DoLE.el.content[0]);
+for(let i=0; i<4; i++){
+	DoLE.el.content[i] = document.createElement("div");
+	DoLE.el.content[i].classList.add("hidden");
+	DoLE.el.content[i].setAttribute("style","position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);");
+	DoLE.el.menu.appendChild(DoLE.el.content[i]);
+}
+// First tab is always selected initially
+DoLE.el.content[0].classList.remove("hidden");
 
+// Tab 1
 let DoLETable = document.createElement("table");
 DoLETable.setAttribute("style","border-top:1px solid white; border-right:1px solid white; width:100%;");
 DoLE.el.content[0].appendChild(DoLETable);
@@ -102,9 +98,9 @@ DoLETR.setAttribute("style","border-bottom:1px solid white;");
 DoLETBody.appendChild(DoLETR);
 
 // Bailey's debt
-let DoLEDebtTD = document.createElement("td");
-DoLEDebtTD.setAttribute("style","border-left:1px solid white; width:40%;");
-DoLETR.appendChild(DoLEDebtTD);
+let DoLETD = document.createElement("td");
+DoLETD.setAttribute("style","border-left:1px solid white; width:40%;");
+DoLETR.appendChild(DoLETD);
 
 DoLE.inputs.debt = document.createElement("input");
 DoLE.inputs.debt.setAttribute("name","DoLEDebt");
@@ -114,26 +110,40 @@ DoLE.inputs.debt.setAttribute("tabindex","0");
 DoLE.inputs.debt.setAttribute("class","macro-textbox");
 DoLE.inputs.debt.setAttribute("style","width:5%; min-width:3em;");
 DoLE.inputs.debt.setAttribute("placeholder",-Math.abs(SugarCube.State.variables.rentmoney*0.01));
-DoLEDebtTD.appendChild(DoLE.inputs.debt);
+DoLETD.appendChild(DoLE.inputs.debt);
 
-let DoLEDebtB = document.createElement("button");
-DoLEDebtB.setAttribute("style","padding:0.3em;");
-DoLEDebtB.setAttribute("onclick","DoLSetDebt()");
-DoLEDebtTD.appendChild(DoLEDebtB);
-DoLEDebtB.appendChild(document.createTextNode("Debt"));
+let DoLEButton = document.createElement("button");
+DoLEButton.setAttribute("style","padding:0.3em;");
+DoLEButton.setAttribute("onclick","DoLSetDebt()");
+DoLETD.appendChild(DoLEButton);
+DoLEButton.appendChild(document.createTextNode("Debt"));
 
-DoLE.el.content[1] = document.createElement("div");
-DoLE.el.content[1].setAttribute("class","hidden");
-DoLE.el.content[1].setAttribute("style","position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);");
-DoLE.el.menu.appendChild(DoLE.el.content[1]);
+// Tab 2
 
-DoLE.el.content[2] = document.createElement("div");
-DoLE.el.content[2].setAttribute("class","hidden");
-DoLE.el.content[2].setAttribute("style","position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);");
-DoLE.el.menu.appendChild(DoLE.el.content[2]);
+
+// Tab 3
+DoLETable = document.createElement("table");
+DoLETable.setAttribute("style","border-top:1px solid white; border-right:1px solid white; width:100%;");
+DoLE.el.content[2].appendChild(DoLETable);
+
+DoLETBody = document.createElement("tbody");
+DoLETable.appendChild(DoLETBody);
+
+DoLETR = document.createElement("tr");
+DoLETR.setAttribute("style","border-bottom:1px solid white");
+DoLETBody.appendChild(DoLETR);
 
 // Clean Body
-let cbbutton = document.createElement("button");
+DoLETD = document.createElement("td");
+DoLETD.setAttribute("style","border-left:1px solid white; width:40%;");
+DoLETR.appendChild(DoLETD);
+
+// In Future: Specify levels to set body clean states
+DoLEButton = document.createElement("button");
+DoLEButton.setAttribute("style","padding:0.3em;");
+DoLEButton.setAttribute("onclick","DoLCleanBody()");
+DoLETD.appendChild(DoLEButton);
+DoLEButton.appendChild(document.createTextNode("Clean Body"));
 
 function DoLOpenMenu(){
 	// Reveal the overlay
@@ -184,4 +194,88 @@ function DoLSetDebt(){
 	}
 	
 	alert("Bailey Debt: £"+(DoLE.rentmoney*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
+}
+
+function DoLCleanBody(){
+	let bl = DoLE.bodyliquid=SugarCube.State.variables.player.bodyliquid;
+
+	SugarCube.State.variables.player.bodyliquid = {
+		"hair":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"face":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"mouth":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"neck":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"leftarm":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"chest":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"rightarm":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"tummy":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"penis":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"vagina":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"vaginaoutside":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"anus":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"bottom":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"thigh":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		},
+		"feet":{
+			"goo":0,
+			"semen":0,
+			"nectar":0
+		}
+	};
+	
+	alert("Body cleaned of all liquids");
 }
