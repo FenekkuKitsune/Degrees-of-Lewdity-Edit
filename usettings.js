@@ -1,19 +1,15 @@
 // Edit variables
-const DoLEdit = {
-	"menu": {
-		"button":null,
-		"overlay":null,
-		"title":null,
-		"content":null,
+const DoLE = {
+	"el": {
+		"toggle":null,
+		"menu":null,
 		"tablist":null,
-		"tab":null,
-		"closebutton":null,
-		"inputs": {
-			"debt":null
-		}
+		"tab":[],
+		"content":[],
+		"debt":null
 	},
-	"native": {
-		menubuttons:Array(),
+	"inputs": {
+		"debt":null
 	},
 	"rentmoney":SugarCube.State.variables.rentmoney,
 	"pain":SugarCube.State.variables.pain,
@@ -26,140 +22,166 @@ const DoLEdit = {
 	"TFChange":5
 };
 
-// Grab the normal buttons so we can disable/enable them as needed
-// let buttons = document.getElementsByClassName("macro-button");
-// for(let i=0; i<8; i++){
-// 	DoLEdit.native.menubuttons.push(buttons[i]);
-// }
-
 // Create button, copy base game UI, but position it in the bottom right.
-DoLEdit.menu.button = document.createElement("button");
-DoLEdit.menu.button.setAttribute("class","link-internal macro-button");
-DoLEdit.menu.button.setAttribute("style","position:fixed; right:0em; bottom:0em; max-width:initial; width:5em;");
-DoLEdit.menu.button.setAttribute("type","button");
-DoLEdit.menu.button.setAttribute("role","button");
-DoLEdit.menu.button.setAttribute("tabindex","0");
-DoLEdit.menu.button.setAttribute("onclick","DoLOpenMenu()");
-DoLEdit.menu.button.appendChild(document.createTextNode("DoLEdit"));
-document.body.appendChild(DoLEdit.menu.button);
+DoLE.el.toggle = document.createElement("button");
+DoLE.el.toggle.setAttribute("class","link-internal macro-button");
+DoLE.el.toggle.setAttribute("style","position:fixed; right:0em; bottom:0em; max-width:initial; width:5em;");
+DoLE.el.toggle.setAttribute("type","button");
+DoLE.el.toggle.setAttribute("role","button");
+DoLE.el.toggle.setAttribute("tabindex","0");
+DoLE.el.toggle.setAttribute("onclick","DoLOpenMenu()");
+DoLE.el.toggle.appendChild(document.createTextNode("DoLEdit"));
+document.body.appendChild(DoLE.el.toggle);
 
 // Create menu
-DoLEdit.menu.overlay = document.createElement("div");
-DoLEdit.menu.overlay.setAttribute("style","display:block; position:fixed; right:6em; bottom:0em; width:101em; height:20em; line-height:1.5em; text-align:left;");
-DoLEdit.menu.overlay.setAttribute("class","hidden");
-document.body.appendChild(DoLEdit.menu.overlay);
+DoLE.el.menu = document.createElement("div");
+DoLE.el.menu.setAttribute("style","display:block; position:fixed; right:6em; bottom:0em; width:101em; height:20em; line-height:1.5em; text-align:left;");
+DoLE.el.menu.setAttribute("class","hidden");
+document.body.appendChild(DoLE.el.menu);
 
-DoLEdit.menu.title = document.createElement("div");
-DoLEdit.menu.title.setAttribute("style","display:flex; flex-wrap:wrap; align-items:center; padding:0.5rem; padding-bottom:0;");
-DoLEdit.menu.overlay.appendChild(DoLEdit.menu.title);
+// Title bar
+let DoLETitleBar = document.createElement("div");
+DoLETitleBar.setAttribute("style","display:flex; flex-wrap:wrap; align-items:center; padding:0.5rem; padding-bottom:0;");
+DoLE.el.menu.appendChild(DoLETitleBar);
 
-DoLEdit.menu.content = document.createElement("div");
-DoLEdit.menu.content.setAttribute("style","position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);");
-DoLEdit.menu.overlay.appendChild(DoLEdit.menu.content);
+// Tab list
+DoLE.el.tablist = document.createElement("div");
+DoLE.el.tablist.setAttribute("class","tab");
+DoLETitleBar.appendChild(DoLE.el.tablist);
 
-DoLEdit.menu.tablist = document.createElement("div");
-DoLEdit.menu.tablist.setAttribute("class","tab");
-DoLEdit.menu.title.appendChild(DoLEdit.menu.tablist);
+// Tabs
+DoLE.el.tab.push(document.createElement("button"));
+DoLE.el.tab[0].setAttribute("class","link-internal macro-button tab-selected");
+DoLE.el.tab[0].setAttribute("type","button");
+DoLE.el.tab[0].setAttribute("role","button");
+DoLE.el.tab[0].setAttribute("tabindex","0");
+DoLE.el.tab[0].setAttribute("onclick","DoLSwitchTab(0)");
+DoLE.el.tab[0].appendChild(document.createTextNode("Game"));
+DoLE.el.tablist.appendChild(DoLE.el.tab[0]);
 
-DoLEdit.menu.tab = document.createElement("button");
-DoLEdit.menu.tab.setAttribute("class","link-internal macro-button tab-selected");
-DoLEdit.menu.tab.setAttribute("type","button");
-DoLEdit.menu.tab.setAttribute("role","button");
-DoLEdit.menu.tab.setAttribute("tabindex","0");
-DoLEdit.menu.tab.appendChild(document.createTextNode("DoLEdit"));
-DoLEdit.menu.tablist.appendChild(DoLEdit.menu.tab);
+DoLE.el.tab.push(document.createElement("button"));
+DoLE.el.tab[1].setAttribute("class","link-internal macro-button");
+DoLE.el.tab[1].setAttribute("type","button");
+DoLE.el.tab[1].setAttribute("role","button");
+DoLE.el.tab[1].setAttribute("tabindex","0");
+DoLE.el.tab[1].setAttribute("onclick","DoLSwitchTab(1)");
+DoLE.el.tab[1].appendChild(document.createTextNode("Stats"));
+DoLE.el.tablist.appendChild(DoLE.el.tab[1]);
 
-DoLEdit.menu.closebutton = document.createElement("div");
-DoLEdit.menu.closebutton.setAttribute("class","customOverlayClose");
-DoLEdit.menu.closebutton.setAttribute("onclick","DoLCloseMenu()");
-DoLEdit.menu.closebutton.setAttribute("style","top:0.8rem");
-DoLEdit.menu.closebutton.setAttribute("onclick","DoLCloseMenu()");
-DoLEdit.menu.tablist.appendChild(DoLEdit.menu.closebutton);
+DoLE.el.tab.push(document.createElement("button"));
+DoLE.el.tab[2].setAttribute("class","link-internal macro-button");
+DoLE.el.tab[2].setAttribute("type","button");
+DoLE.el.tab[2].setAttribute("role","button");
+DoLE.el.tab[2].setAttribute("tabindex","0");
+DoLE.el.tab[2].setAttribute("onclick","DoLSwitchTab(2)");
+DoLE.el.tab[2].appendChild(document.createTextNode("Body"));
+DoLE.el.tablist.appendChild(DoLE.el.tab[2]);
 
-// Content for the overlay
-let DoLTable = document.createElement("table");
-DoLTable.setAttribute("style","border-top:1px solid white; border-right:1px solid white; width:100%;");
-DoLEdit.menu.content.appendChild(DoLTable);
+// Close button
+let DoLEClose = document.createElement("div");
+DoLEClose.setAttribute("class","customOverlayClose");
+DoLEClose.setAttribute("onclick","DoLCloseMenu()");
+DoLEClose.setAttribute("style","top:0.8rem");
+DoLEClose.setAttribute("onclick","DoLCloseMenu()");
+DoLE.el.tablist.appendChild(DoLEClose);
 
-let DoLTBody = document.createElement("tbody");
-DoLTable.appendChild(DoLTBody);
+// Content
+DoLE.el.content[0] = document.createElement("div");
+DoLE.el.content[0].setAttribute("style","position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);");
+DoLE.el.menu.appendChild(DoLE.el.content[0]);
 
-let DoLTR = document.createElement("tr");
-DoLTR.setAttribute("style","border-bottom:1px solid white;");
-DoLTBody.appendChild(DoLTR);
+let DoLETable = document.createElement("table");
+DoLETable.setAttribute("style","border-top:1px solid white; border-right:1px solid white; width:100%;");
+DoLE.el.content[0].appendChild(DoLETable);
 
-let debttd = document.createElement("td");
-debttd.setAttribute("style","border-left:1px solid white; width:40%;");
-DoLTR.appendChild(debttd);
+let DoLETBody = document.createElement("tbody");
+DoLETable.appendChild(DoLETBody);
 
-DoLEdit.menu.inputs.debt = document.createElement("input");
-DoLEdit.menu.inputs.debt.setAttribute("name","DoLEditDebt");
-DoLEdit.menu.inputs.debt.setAttribute("type","text");
-DoLEdit.menu.inputs.debt.setAttribute("inputmode","text");
-DoLEdit.menu.inputs.debt.setAttribute("tabindex","0");
-DoLEdit.menu.inputs.debt.setAttribute("class","macro-textbox");
-DoLEdit.menu.inputs.debt.setAttribute("style","width:5%; min-width:3em;");
-DoLEdit.menu.inputs.debt.setAttribute("placeholder",-Math.abs(SugarCube.State.variables.rentmoney*0.01));
-debttd.appendChild(DoLEdit.menu.inputs.debt);
+let DoLETR = document.createElement("tr");
+DoLETR.setAttribute("style","border-bottom:1px solid white;");
+DoLETBody.appendChild(DoLETR);
 
-let debtbutton = document.createElement("button");
-debtbutton.setAttribute("style","padding:0.3em;");
-debtbutton.setAttribute("onclick","DoLSetDebt()");
-debttd.appendChild(debtbutton);
-debtbutton.appendChild(document.createTextNode("Debt"));
+// Bailey's debt
+let DoLEDebtTD = document.createElement("td");
+DoLEDebtTD.setAttribute("style","border-left:1px solid white; width:40%;");
+DoLETR.appendChild(DoLEDebtTD);
 
-// Place the new overlay below the old one
-// document.getElementsByClassName("passage")[0].appendChild(DoLEdit.menu.container);
+DoLE.inputs.debt = document.createElement("input");
+DoLE.inputs.debt.setAttribute("name","DoLEDebt");
+DoLE.inputs.debt.setAttribute("type","text");
+DoLE.inputs.debt.setAttribute("inputmode","text");
+DoLE.inputs.debt.setAttribute("tabindex","0");
+DoLE.inputs.debt.setAttribute("class","macro-textbox");
+DoLE.inputs.debt.setAttribute("style","width:5%; min-width:3em;");
+DoLE.inputs.debt.setAttribute("placeholder",-Math.abs(SugarCube.State.variables.rentmoney*0.01));
+DoLEDebtTD.appendChild(DoLE.inputs.debt);
 
+let DoLEDebtB = document.createElement("button");
+DoLEDebtB.setAttribute("style","padding:0.3em;");
+DoLEDebtB.setAttribute("onclick","DoLSetDebt()");
+DoLEDebtTD.appendChild(DoLEDebtB);
+DoLEDebtB.appendChild(document.createTextNode("Debt"));
+
+DoLE.el.content[1] = document.createElement("div");
+DoLE.el.content[1].setAttribute("class","hidden");
+DoLE.el.content[1].setAttribute("style","position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);");
+DoLE.el.menu.appendChild(DoLE.el.content[1]);
+
+DoLE.el.content[2] = document.createElement("div");
+DoLE.el.content[2].setAttribute("class","hidden");
+DoLE.el.content[2].setAttribute("style","position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);");
+DoLE.el.menu.appendChild(DoLE.el.content[2]);
+
+// Clean Body
+let cbbutton = document.createElement("button");
 
 function DoLOpenMenu(){
-	// Close the normal game menu.
-	closeOverlay();
-	
-	// Disable the other buttons so we can't open the normal menu
-	// for(let i=0; i<DoLEdit.native.menubuttons.length; i++){
-	// 	DoLEdit.native.menubuttons[i].setAttribute("disabled","true");
-	// 	DoLEdit.native.menubuttons[i].classList.remove("macro-button-selected");
-	// }
-
 	// Reveal the overlay
-	// DoLEdit.menu.container.classList.remove("hidden");
-	DoLEdit.menu.overlay.classList.remove("hidden");
+	DoLE.el.menu.classList.remove("hidden");
 
 	// Change the function on the button to close instead of open
-	DoLEdit.menu.button.setAttribute("onclick","DoLCloseMenu()");
+	DoLE.el.toggle.setAttribute("onclick","DoLCloseMenu()");
 
 	// Highlight the button
-	DoLEdit.menu.button.classList.add("macro-button-selected");
+	DoLE.el.toggle.classList.add("macro-button-selected");
 }
 
 function DoLCloseMenu(){
-	// Re-enable the other buttons
-	// for(let i=0; i<DoLEdit.native.menubuttons.length; i++){
-	// 	DoLEdit.native.menubuttons[i].removeAttribute("disabled");
-	// }
-	
 	// Hide the overlay
-	// DoLEdit.menu.container.classList.add("hidden");
-	DoLEdit.menu.overlay.classList.add("hidden");
+	DoLE.el.menu.classList.add("hidden");
 
 	// Set the button back to open
-	DoLEdit.menu.button.setAttribute("onclick","DoLOpenMenu()");
+	DoLE.el.toggle.setAttribute("onclick","DoLOpenMenu()");
 
 	// Remove the button highlight
-	DoLEdit.menu.button.classList.remove("macro-button-selected");
+	DoLE.el.toggle.classList.remove("macro-button-selected");
+}
+
+function DoLSwitchTab(tab){
+	let tabs = DoLE.el.tab;
+	let contents = DoLE.el.content;
+
+	for(let i=0; i<tabs.length; i++){
+		if(i!==tab){
+			tabs[i].classList.remove("tab-selected");
+			contents[i].setAttribute("class","hidden");
+		} else{
+			tabs[i].classList.add("tab-selected");
+			contents[i].setAttribute("class","");
+		}
+	}
 }
 
 function DoLSetDebt(){
-	let val = DoLEdit.menu.inputs.debt.value*100;
-	DoLEdit.rentmoney = SugarCube.State.variables.rentmoney;
+	let val = DoLE.inputs.debt.value*100;
+	DoLE.rentmoney = SugarCube.State.variables.rentmoney;
 
 	// Set the value to the input if a value was provided, otherwise just invert the debt.
 	if(val!=0){
 		SugarCube.State.variables.rentmoney=val;
 	} else {
-		SugarCube.State.variables.rentmoney=DoLEdit.rentmoney;
+		SugarCube.State.variables.rentmoney=DoLE.rentmoney;
 	}
 	
-	alert("Bailey Debt: £"+(DoLEdit.rentmoney*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
+	alert("Bailey Debt: £"+(DoLE.rentmoney*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
 }
