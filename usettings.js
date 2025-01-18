@@ -190,7 +190,7 @@ function DoLSetDebt(){
 	if(val!=0){
 		SugarCube.State.variables.rentmoney=val;
 	} else {
-		SugarCube.State.variables.rentmoney=DoLE.rentmoney;
+		SugarCube.State.variables.rentmoney=-Math.abs(SugarCube.State.variables.rentmoney);
 	}
 	
 	alert("Bailey Debt: £"+(DoLE.rentmoney*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
