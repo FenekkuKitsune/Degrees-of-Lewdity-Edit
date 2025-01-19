@@ -197,7 +197,7 @@ function DoLSetDebt(){
 }
 
 function DoLCleanBody(){
-	let bl = DoLE.bodyliquid=SugarCube.State.variables.player.bodyliquid;
+	DoLE.bodyliquid = SugarCube.State.variables.player.bodyliquid;
 
 	SugarCube.State.variables.player.bodyliquid = {
 		"hair":{
