@@ -9,16 +9,7 @@ const DoLE = {
 	},
 	"inputs": {
 		"debt":null
-	},
-	"rentmoney":SugarCube.State.variables.rentmoney,
-	"pain":SugarCube.State.variables.pain,
-	"arousal":SugarCube.State.variables.arousal,
-	"tiredness":SugarCube.State.variables.tiredness,
-	"stress":SugarCube.State.variables.stress,
-	"trauma":SugarCube.State.variables.trauma,
-	"control":SugarCube.State.variables.control,
-	"bodyliquid":SugarCube.State.variables.player.bodyliquid,
-	"TFChange":5
+	}
 };
 
 // Create button, copy base game UI, but position it in the bottom right.
@@ -34,7 +25,7 @@ document.body.appendChild(DoLE.el.toggle);
 
 // Create menu
 DoLE.el.menu = document.createElement("div");
-DoLE.el.menu.setAttribute("style","display:block; position:fixed; right:6em; bottom:0em; width:101em; height:20em; line-height:1.5em; text-align:left;");
+DoLE.el.menu.setAttribute("style","display:block; position:fixed; right:6em; bottom:0em; width:50em; height:20em; line-height:1.5em; text-align:left;");
 DoLE.el.menu.setAttribute("class","hidden");
 document.body.appendChild(DoLE.el.menu);
 
@@ -184,7 +175,7 @@ function DoLSwitchTab(tab){
 
 function DoLSetDebt(){
 	let val = DoLE.inputs.debt.value*100;
-	DoLE.rentmoney = SugarCube.State.variables.rentmoney;
+	let debt = SugarCube.State.variables.rentmoney;
 
 	// Set the value to the input if a value was provided, otherwise just invert the debt.
 	if(val!=0){
@@ -193,89 +184,19 @@ function DoLSetDebt(){
 		SugarCube.State.variables.rentmoney=-Math.abs(SugarCube.State.variables.rentmoney);
 	}
 	
-	alert("Bailey Debt: £"+(DoLE.rentmoney*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
+	alert("Bailey Debt: £"+(debt*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
 }
 
 function DoLCleanBody(){
-	DoLE.bodyliquid = SugarCube.State.variables.player.bodyliquid;
+	// let bl = SugarCube.State.variables.player.bodyliquid;
 
-	SugarCube.State.variables.player.bodyliquid = {
-		"hair":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"face":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"mouth":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"neck":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"leftarm":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"chest":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"rightarm":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"tummy":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"penis":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"vagina":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"vaginaoutside":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"anus":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"bottom":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"thigh":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		},
-		"feet":{
-			"goo":0,
-			"semen":0,
-			"nectar":0
-		}
-	};
+	// Set all body liquids to 0, which cleans the player of all external liquids.
+	for(let area in SugarCube.State.variables.player.bodyliquid){
+		// Set each value individually. This is purely so we can avoid issues if future game updates add other liquids.
+		SugarCube.State.variables.player.bodyliquid[area].goo=0;
+		SugarCube.State.variables.player.bodyliquid[area].semen=0;
+		SugarCube.State.variables.player.bodyliquid[area].nectar=0;
+	}
 	
-	alert("Body cleaned of all liquids");
+	alert("Body cleaned of all external liquids");
 }
