@@ -10,7 +10,11 @@ const DoLE = {
 	"inputs": {
 		"debt":null
 	},
-	"createMenu":function(){
+	"versions": {
+		"game":"0.5.3.7",
+		"DoLE":"0.14"
+	},
+	"init":function(){
 		// Create button, copy base game UI, but position it in the bottom right.
 		DoLE.el.toggle = DoLE.newElement(
 			"button",
@@ -23,7 +27,7 @@ const DoLE = {
 				"onclick":"DoLE.openMenu()"
 			},
 			document.body,
-			"DoLEdit"
+			"DoLEdit\n"+DoLE.versions.DoLE
 		);
 		
 		// Create menu
@@ -227,4 +231,5 @@ const DoLE = {
 		alert("Body cleaned of all external liquids");
 	}
 };
-DoLE.createMenu();
+
+DoLE.init();
