@@ -8,11 +8,19 @@ const DoLE = {
 		"content":[]
 	},
 	"inputs": {
-		"debt":null
+		"debt":null,
+		"wolfharmony":null,
+		"wolfferocity":null
 	},
 	"versions": {
 		"game":"0.5.3.7",
-		"DoLE":"0.14"
+		"DoLE":"0.15"
+	},
+	"styles":{
+		"table": {"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"},
+		"tbody": {},
+		"tr": {"style":"border-bottom:1px solid white;"},
+		"td": {"style":"border-left:1px solid white; width:40%;"}
 	},
 	"init":function(){
 		// Create button, copy base game UI, but position it in the bottom right.
@@ -96,15 +104,15 @@ const DoLE = {
 			}
 		}
 
-		// Tab 1
-		let DoLETable = DoLE.newElement("table", {"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"}, DoLE.el.content[0]);
+		// Tab 1 - General
+		let DoLETable = DoLE.newElement("table", DoLE.styles.table, DoLE.el.content[0]);
 		
-		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
+		let DoLETBody = DoLE.newElement("tbody", DoLE.styles.tbody, DoLETable);
 		
-		let DoLETR = DoLE.newElement("tr", {"style":"border-bottom:1px solid white;"}, DoLETBody);
+		let DoLETR = DoLE.newElement("tr", DoLE.styles.tr, DoLETBody);
 		
 		// Bailey's debt
-		let DoLETD = DoLE.newElement("td", {"style":"border-left:1px solid white; width:40%"}, DoLETR);
+		let DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
 		
 		DoLE.inputs.debt = DoLE.newElement(
 			"input",
@@ -130,18 +138,17 @@ const DoLE = {
 			"Debt"
 		);
 		
-		// Tab 2
+		// Tab 2 - Stats
 		
+		// Tab 3 - Body
+		DoLETable = DoLE.newElement("table", DoLE.styles.table, DoLE.el.content[2]);
 		
-		// Tab 3
-		DoLETable = DoLE.newElement("table", {"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"}, DoLE.el.content[2]);
+		DoLETBody = DoLE.newElement("tbody", DoLE.styles.tbody, DoLETable);
 		
-		DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
-		
-		DoLETR = DoLE.newElement("tr", {"style":"border-bottom:1px solid white"}, DoLETBody);
+		DoLETR = DoLE.newElement("tr", DoLE.styles.tr, DoLETBody);
 		
 		// Clean Body
-		DoLETD = DoLE.newElement("td", {"style":"border-left:1px solid white; width:40%;"}, DoLETR);
+		DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
 		
 		// In Future: Specify levels to set body clean states
 		DoLEButton = DoLE.newElement(
@@ -152,6 +159,68 @@ const DoLE = {
 			},
 			DoLETD,
 			"Clean Body"
+		);
+
+		// Tab 4 - Social
+		DoLETable = DoLE.newElement("table", DoLE.styles.table, DoLE.el.content[3]);
+
+		DoLETBody = DoLE.newElement("tbody", DoLE.styles.tbody, DoLETable);
+
+		DoLETR = DoLE.newElement("tr", DoLE.styles.tr, DoLETBody);
+
+		// Wolfpack harmony
+		DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
+
+		// Set these to slides, because they're constrained between 0-22
+		DoLE.inputs.wolfharmony = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEWolfHarmony",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox",
+				"style":"width:5%; min-width:3em",
+				"placeholder":"0-22"
+			},
+			DoLETD
+		);
+
+		DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"style":"padding:0.3em",
+				"onclick":"DoLE.setWolfHarmony()"
+			},
+			DoLETD,
+			"Wolf Ferocity"
+		);
+
+		// Wolfpack ferocity
+		DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
+
+		DoLE.inputs.wolfferocity = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEWolfFerocity",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox",
+				"style":"width:5%; min-width:3em",
+				"placeholder":"0-22"
+			},
+			DoLETD
+		);
+		
+		DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"style":"padding:0.3em",
+				"onclick":"DoLE.setWolfFerocity()"
+			},
+			DoLETD,
+			"Wolf Harmony"
 		);
 	},
 	"newElement":function(type, attrs, appendTo, text=null){
@@ -217,6 +286,14 @@ const DoLE = {
 		
 		alert("Bailey Debt: £"+(debt*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
 	},
+	"setWolfHarmony":function(){
+		//DoLEdits.wolfpackferocity=SugarCube.State.variables.wolfpackferocity;
+		// DoLEdits.wolfpackharmony=SugarCube.State.variables.wolfpackharmony;
+		// SugarCube.State.variables.wolfpackferocity=21;
+		// SugarCube.State.variables.wolfpackharmony=21;
+		// alert("Wolf Ferocity/Harmony: "+DoLEdits.wolfpackferocity+"/"+DoLEdits.wolfpackharmony+" is now "+SugarCube.State.variables.wolfpackferocity+"/"+SugarCube.State.variables.wolfpackharmony);
+	},
+	"setWolfFerocity":function(){},
 	"cleanBody":function(){
 		// let bl = SugarCube.State.variables.player.bodyliquid;
 	
