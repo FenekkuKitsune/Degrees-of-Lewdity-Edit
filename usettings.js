@@ -1,4 +1,4 @@
-// Edit variables
+// DoLEdit
 const DoLE = {
 	"el": {
 		"toggle":null,
@@ -9,6 +9,146 @@ const DoLE = {
 	},
 	"inputs": {
 		"debt":null
+	},
+	"createMenu":function(){
+		// Create button, copy base game UI, but position it in the bottom right.
+		DoLE.el.toggle = DoLE.newElement(
+			"button",
+			{
+				"class":"link-internal macro-button",
+				"style":"position:fixed; right:0em; bottom:0em; max-width:initial; width:5em;",
+				"type":"button",
+				"role":"button",
+				"tabindex":"0",
+				"onclick":"DoLE.openMenu()"
+			},
+			document.body,
+			"DoLEdit"
+		);
+		
+		// Create menu
+		DoLE.el.menu = DoLE.newElement(
+			"div",
+			{
+				"style":"display:block; position: fixed; right:6em; bottom:0em; width:50em; height:20em; line-height:1.5em; text-align:left;",
+				"class":"hidden"
+			},
+			document.body
+		);
+
+		// Title bar
+		let DoLETitleBar = DoLE.newElement("div", {"style":"display:flex; flex-wrap:wrap; align-items:center; padding:0.5rem; padding-bottom:0;"}, DoLE.el.menu);
+
+		// Tab list
+		DoLE.el.tablist = DoLE.newElement("div", {"class":"tab"}, DoLETitleBar);
+
+		// Tabs
+		for(let i=0; i<4; i++){
+			DoLE.el.tab.push(DoLE.newElement(
+				"button",
+				{
+					"class":"link-internal macro-button",
+					"type":"button",
+					"role":"button",
+					"tabindex":"0",
+					"onclick":"DoLE.switchTab("+i+")"
+				},
+				DoLE.el.tablist
+			));
+		
+			// First tab is always selected initially
+			if(i===0){
+				DoLE.el.tab[i].classList.add("tab-selected");
+			}
+		}
+
+		// Tab names
+		DoLE.el.tab[0].appendChild(document.createTextNode("Game"));
+		DoLE.el.tab[1].appendChild(document.createTextNode("Stats"));
+		DoLE.el.tab[2].appendChild(document.createTextNode("Body"));
+		DoLE.el.tab[3].appendChild(document.createTextNode("Social"));
+
+		// Close button
+		let DoLEClose = DoLE.newElement(
+			"div",
+			{
+				"class":"customOverlayClose",
+				"style":"top:0.8rem",
+				"onclick":"DoLE.closeMenu()"
+			},
+			DoLE.el.tablist
+		);
+
+		// Content
+		for(let i=0; i<4; i++){
+			DoLE.el.content.push(DoLE.newElement(
+				"div",
+				{"style":"position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);"},
+				DoLE.el.menu
+			));
+			// First tab is always selected initially
+			if(i!==0){
+				DoLE.el.content[i].classList.add("hidden");
+			}
+		}
+
+		// Tab 1
+		let DoLETable = DoLE.newElement("table", {"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"}, DoLE.el.content[0]);
+		
+		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
+		
+		let DoLETR = DoLE.newElement("tr", {"style":"border-bottom:1px solid white;"}, DoLETBody);
+		
+		// Bailey's debt
+		let DoLETD = DoLE.newElement("td", {"style":"border-left:1px solid white; width:40%"}, DoLETR);
+		
+		DoLE.inputs.debt = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEDebt",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox",
+				"style":"width:5%; min-width:3em",
+				"placeholder":-Math.abs(SugarCube.State.variables.rentmoney*0.01)
+			},
+			DoLETD
+		);
+		
+		let DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"style":"padding:0.3em;",
+				"onclick":"DoLE.setDebt()"
+			},
+			DoLETD,
+			"Debt"
+		);
+		
+		// Tab 2
+		
+		
+		// Tab 3
+		DoLETable = DoLE.newElement("table", {"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"}, DoLE.el.content[2]);
+		
+		DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
+		
+		DoLETR = DoLE.newElement("tr", {"style":"border-bottom:1px solid white"}, DoLETBody);
+		
+		// Clean Body
+		DoLETD = DoLE.newElement("td", {"style":"border-left:1px solid white; width:40%;"}, DoLETR);
+		
+		// In Future: Specify levels to set body clean states
+		DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"style":"padding:0.3em",
+				"onclick":"DoLE.cleanBody()"
+			},
+			DoLETD,
+			"Clean Body"
+		);
 	},
 	"newElement":function(type, attrs, appendTo, text=null){
 		let el = document.createElement(type);
@@ -87,141 +227,4 @@ const DoLE = {
 		alert("Body cleaned of all external liquids");
 	}
 };
-
-// Create button, copy base game UI, but position it in the bottom right.
-DoLE.el.toggle = DoLE.newElement(
-	"button",
-	{
-		"class":"link-internal macro-button",
-		"style":"position:fixed; right:0em; bottom:0em; max-width:initial; width:5em;",
-		"type":"button",
-		"role":"button",
-		"tabindex":"0",
-		"onclick":"DoLE.openMenu()"
-	},
-	document.body,
-	"DoLEdit"
-);
-
-// Create menu
-DoLE.el.menu = DoLE.newElement(
-	"div",
-	{
-		"style":"display:block; position: fixed; right:6em; bottom:0em; width:50em; height:20em; line-height:1.5em; text-align:left;",
-		"class":"hidden"
-	},
-	document.body
-);
-
-// Title bar
-let DoLETitleBar = DoLE.newElement("div", {"style":"display:flex; flex-wrap:wrap; align-items:center; padding:0.5rem; padding-bottom:0;"}, DoLE.el.menu);
-
-// Tab list
-DoLE.el.tablist = DoLE.newElement("div", {"class":"tab"}, DoLETitleBar);
-
-// Tabs
-for(let i=0; i<4; i++){
-	DoLE.el.tab.push(DoLE.newElement(
-		"button",
-		{
-			"class":"link-internal macro-button",
-			"type":"button",
-			"role":"button",
-			"tabindex":"0",
-			"onclick":"DoLE.switchTab("+i+")"
-		},
-		DoLE.el.tablist
-	));
-
-	// First tab is always selected initially
-	if(i===0){
-		DoLE.el.tab[i].classList.add("tab-selected");
-	}
-}
-
-// Tab names
-DoLE.el.tab[0].appendChild(document.createTextNode("Game"));
-DoLE.el.tab[1].appendChild(document.createTextNode("Stats"));
-DoLE.el.tab[2].appendChild(document.createTextNode("Body"));
-DoLE.el.tab[3].appendChild(document.createTextNode("Social"));
-
-// Close button
-let DoLEClose = DoLE.newElement(
-	"div",
-	{
-		"class":"customOverlayClose",
-		"style":"top:0.8rem",
-		"onclick":"DoLE.closeMenu()"
-	},
-	DoLE.el.tablist
-);
-
-// Content
-for(let i=0; i<4; i++){
-	DoLE.el.content.push(DoLE.newElement(
-		"div",
-		{"style":"position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);"},
-		DoLE.el.menu
-	));
-	// First tab is always selected initially
-	if(i!==0){
-		DoLE.el.content[i].classList.add("hidden");
-	}
-}
-// Tab 1
-let DoLETable = DoLE.newElement("table", {"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"}, DoLE.el.content[0]);
-
-let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
-
-let DoLETR = DoLE.newElement("tr", {"style":"border-bottom:1px solid white;"}, DoLETBody);
-
-// Bailey's debt
-let DoLETD = DoLE.newElement("td", {"style":"border-left:1px solid white; width:40%"}, DoLETR);
-
-DoLE.inputs.debt = DoLE.newElement(
-	"input",
-	{
-		"name":"DoLEDebt",
-		"type":"text",
-		"inputmode":"text",
-		"tabindex":"0",
-		"class":"macro-textbox",
-		"style":"width:5%; min-width:3em",
-		"placeholder":-Math.abs(SugarCube.State.variables.rentmoney*0.01)
-	},
-	DoLETD
-);
-
-let DoLEButton = DoLE.newElement(
-	"button",
-	{
-		"style":"padding:0.3em;",
-		"onclick":"DoLE.setDebt()"
-	},
-	DoLETD,
-	"Debt"
-);
-
-// Tab 2
-
-
-// Tab 3
-DoLETable = DoLE.newElement("table", {"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"}, DoLE.el.content[2]);
-
-DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
-
-DoLETR = DoLE.newElement("tr", {"style":"border-bottom:1px solid white"}, DoLETBody);
-
-// Clean Body
-DoLETD = DoLE.newElement("td", {"style":"border-left:1px solid white; width:40%;"}, DoLETR);
-
-// In Future: Specify levels to set body clean states
-DoLEButton = DoLE.newElement(
-	"button",
-	{
-		"style":"padding:0.3em",
-		"onclick":"DoLE.cleanBody()"
-	},
-	DoLETD,
-	"Clean Body"
-);
+DoLE.createMenu();
