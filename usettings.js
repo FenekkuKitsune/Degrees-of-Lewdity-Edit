@@ -199,7 +199,7 @@ const DoLE = {
 				"min":"0",
 				"step":"5",
 				"max":"100",
-				"value":SugarCube.State.variables.wolfpackharmony,
+				"value":Math.floor(((SugarCube.State.variables.wolfpackharmony)/20)*100),
 				"oninput":"DoLE.inputs.wolf.harmonyT.value = this.value",
 				"onchange":"DoLE.inputs.wolf.harmonyT.value = this.value"
 			},
@@ -214,7 +214,7 @@ const DoLE = {
 				"tabindex":"0",
 				"class":"macro-textbox",
 				"style":"width:5%; min-width:3em",
-				"value":SugarCube.State.variables.wolfpackharmony,
+				"value":Math.floor(((SugarCube.State.variables.wolfpackharmony)/20)*100),
 				"oninput":"DoLE.inputs.wolf.harmonyR.value = this.value",
 				"onchange":"DoLE.inputs.wolf.harmonyR.value = this.value"
 			},
@@ -224,10 +224,10 @@ const DoLE = {
 			"button",
 			{
 				"style":"padding:0.3em",
-				"onclick":"DoLE.setWolfHarmony()"
+				"onclick":"DoLE.setSocial('wolfpack', 'harmony')"
 			},
 			DoLETD,
-			"Wolf Ferocity"
+			"Wolf Harmony"
 		);
 
 		// Wolfpack ferocity
@@ -242,7 +242,7 @@ const DoLE = {
 				"min":"0",
 				"step":"5",
 				"max":"100",
-				"value":SugarCube.State.variables.wolfpackferocity,
+				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
 				"oninput":"DoLE.inputs.wolf.ferocityT.value = this.value",
 				"onchange":"DoLE.inputs.wolf.ferocityT.value = this.value"
 			},
@@ -257,7 +257,7 @@ const DoLE = {
 				"tabindex":"0",
 				"class":"macro-textbox",
 				"style":"width:5%; min-width:3em",
-				"value":SugarCube.State.variables.wolfpackferocity,
+				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
 				"oninput":"DoLE.inputs.wolf.ferocityR.value = this.value",
 				"onchange":"DoLE.inputs.wolf.ferocityR.value = this.value"
 			},
@@ -267,10 +267,10 @@ const DoLE = {
 			"button",
 			{
 				"style":"padding:0.3em",
-				"onclick":"DoLE.setWolfFerocity()"
+				"onclick":"DoLE.setSocial('wolfpack', 'ferocity')"
 			},
 			DoLETD,
-			"Wolf Harmony"
+			"Wolf Ferocity"
 		);
 	},
 	"newElement":function(type, attrs, appendTo, text=null){
@@ -350,23 +350,30 @@ const DoLE = {
 		
 		alert("Body cleaned of all external liquids");
 	},
-	"setWolfHarmony":function(){
-		// Pack harmony/ferocity is from 0-20+
-		let harmony = 20*(DoLE.inputs.wolf.harmonyT/100);
-		let oldharmony = SugarCube.State.variables.wolfpackharmony;
-
-		SugarCube.State.variables.wolfpackharmony = harmony;
-
-		alert("Wolfpack Harmony: "+(oldharmony/20)*100+"% is now "+(harmony/20)*100+"%\nValues above 100% will not display, but do affect gains/losses");
-	},
-	"setWolfFerocity":function(){
-		// Pack harmony/ferocity is from 0-20+
-		let ferocity = 20*(DoLE.inputs.wolf.ferocityT/100);
-		let oldferocity = SugarCube.State.variables.wolfpackferocity;
-
-		SugarCube.State.variables.wolfpackferocity = ferocity;
-
-		alert("Wolfpack Ferocity: "+(oldferocity/20)*100+"% is now "+(ferocity/20)*100+"%\nValues above 100% will not display, but do affect gains/losses");
+	"setSocial":function(npc, stat){
+		switch (npc) {
+			case "wolfpack":
+				if(stat==="harmony"){
+					// Pack harmony/ferocity is from 0-20+
+					let harmony = 20*(DoLE.inputs.wolf.harmonyT.value/100);
+					let oldharmony = SugarCube.State.variables.wolfpackharmony;
+			
+					SugarCube.State.variables.wolfpackharmony = harmony;
+			
+					alert("Wolfpack Harmony: "+Math.floor((oldharmony/20)*100)+"% is now "+Math.floor((harmony/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
+				} else if(stat==="ferocity"){
+					// Pack harmony/ferocity is from 0-20+
+					let ferocity = 20*(DoLE.inputs.wolf.ferocityT.value/100);
+					let oldferocity = SugarCube.State.variables.wolfpackferocity;
+			
+					SugarCube.State.variables.wolfpackferocity = ferocity;
+			
+					alert("Wolfpack Ferocity: "+Math.floor((oldferocity/20)*100)+"% is now "+Math.floor((ferocity/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
+				}
+				break;
+			default:
+				break;
+		}
 	}
 };
 
