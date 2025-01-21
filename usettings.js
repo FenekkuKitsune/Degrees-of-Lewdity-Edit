@@ -9,8 +9,12 @@ const DoLE = {
 	},
 	"inputs": {
 		"debt":null,
-		"wolfharmony":null,
-		"wolfferocity":null
+		"wolf": {
+			"harmonyR":null,
+			"harmonyT":null,
+			"ferocityR":null,
+			"ferocityT":null
+		}
 	},
 	"versions": {
 		"game":"0.5.3.7",
@@ -171,21 +175,37 @@ const DoLE = {
 		// Wolfpack harmony
 		DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
 
-		// Set these to slides, because they're constrained between 0-22
-		DoLE.inputs.wolfharmony = DoLE.newElement(
+		// Apparently harmony/ferocity is between 0-20, 0-100%, but it can go above 20
+		DoLE.inputs.wolf.harmonyR = DoLE.newElement(
 			"input",
 			{
-				"name":"DoLEWolfHarmony",
+				"name":"DolEWolfHarmonyRange",
+				"type":"range",
+				"style":"vertical-align:middle;",
+				"min":"0",
+				"step":"5",
+				"max":"100",
+				"value":SugarCube.State.variables.wolfpackharmony,
+				"oninput":"DoLE.inputs.wolf.harmonyT.value = this.value",
+				"onchange":"DoLE.inputs.wolf.harmonyT.value = this.value"
+			},
+			DoLETD
+		);
+		DoLE.inputs.wolf.harmonyT = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEWolfHarmonyText",
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
 				"class":"macro-textbox",
 				"style":"width:5%; min-width:3em",
-				"placeholder":"0-22"
+				"value":SugarCube.State.variables.wolfpackharmony,
+				"oninput":"DoLE.inputs.wolf.harmonyR.value = this.value",
+				"onchange":"DoLE.inputs.wolf.harmonyR.value = this.value"
 			},
 			DoLETD
 		);
-
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
@@ -199,20 +219,36 @@ const DoLE = {
 		// Wolfpack ferocity
 		DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
 
-		DoLE.inputs.wolfferocity = DoLE.newElement(
+		DoLE.inputs.wolf.ferocityR = DoLE.newElement(
 			"input",
 			{
-				"name":"DoLEWolfFerocity",
+				"name":"DoLEWolfFerocityRange",
+				"type":"range",
+				"style":"vertical-align:middle;",
+				"min":"0",
+				"step":"5",
+				"max":"100",
+				"value":SugarCube.State.variables.wolfpackferocity,
+				"oninput":"DoLE.inputs.wolf.ferocityT.value = this.value",
+				"onchange":"DoLE.inputs.wolf.ferocityT.value = this.value"
+			},
+			DoLETD
+		);
+		DoLE.inputs.wolf.ferocityT = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEWolfFerocityText",
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
 				"class":"macro-textbox",
 				"style":"width:5%; min-width:3em",
-				"placeholder":"0-22"
+				"value":SugarCube.State.variables.wolfpackferocity,
+				"oninput":"DoLE.inputs.wolf.ferocityR.value = this.value",
+				"onchange":"DoLE.inputs.wolf.ferocityR.value = this.value"
 			},
 			DoLETD
 		);
-		
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
@@ -274,26 +310,18 @@ const DoLE = {
 		}
 	},
 	"setDebt":function(){
-		let val = DoLE.inputs.debt.value*100;
-		let debt = SugarCube.State.variables.rentmoney;
+		let debt = DoLE.inputs.debt.value*100;
+		let olddebt = SugarCube.State.variables.rentmoney;
 	
 		// Set the value to the input if a value was provided, otherwise just invert the debt.
 		if(val!=0){
-			SugarCube.State.variables.rentmoney=val;
+			SugarCube.State.variables.rentmoney=debt;
 		} else {
 			SugarCube.State.variables.rentmoney=-Math.abs(SugarCube.State.variables.rentmoney);
 		}
 		
-		alert("Bailey Debt: £"+(debt*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
+		alert("Bailey Debt: £"+(olddebt*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
 	},
-	"setWolfHarmony":function(){
-		//DoLEdits.wolfpackferocity=SugarCube.State.variables.wolfpackferocity;
-		// DoLEdits.wolfpackharmony=SugarCube.State.variables.wolfpackharmony;
-		// SugarCube.State.variables.wolfpackferocity=21;
-		// SugarCube.State.variables.wolfpackharmony=21;
-		// alert("Wolf Ferocity/Harmony: "+DoLEdits.wolfpackferocity+"/"+DoLEdits.wolfpackharmony+" is now "+SugarCube.State.variables.wolfpackferocity+"/"+SugarCube.State.variables.wolfpackharmony);
-	},
-	"setWolfFerocity":function(){},
 	"cleanBody":function(){
 		// let bl = SugarCube.State.variables.player.bodyliquid;
 	
@@ -306,6 +334,24 @@ const DoLE = {
 		}
 		
 		alert("Body cleaned of all external liquids");
+	},
+	"setWolfHarmony":function(){
+		// Pack harmony/ferocity is from 0-20+
+		let harmony = 20*(DoLE.inputs.wolf.harmonyT/100);
+		let oldharmony = SugarCube.State.variables.wolfpackharmony;
+
+		SugarCube.State.variables.wolfpackharmony = harmony;
+
+		alert("Wolfpack Harmony: "+(oldharmony/20)*100+"% is now "+(harmony/20)*100+"%\nValues above 100% will not display, but do affect gains/losses");
+	},
+	"setWolfFerocity":function(){
+		// Pack harmony/ferocity is from 0-20+
+		let ferocity = 20*(DoLE.inputs.wolf.ferocityT/100);
+		let oldferocity = SugarCube.State.variables.wolfpackferocity;
+
+		SugarCube.State.variables.wolfpackferocity = ferocity;
+
+		alert("Wolfpack Ferocity: "+(oldferocity/20)*100+"% is now "+(ferocity/20)*100+"%\nValues above 100% will not display, but do affect gains/losses");
 	}
 };
 
