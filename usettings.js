@@ -1,30 +1,44 @@
 // DoLEdit
 const DoLE = {
-	"el": {
+	"el":{
 		"toggle":null,
 		"menu":null,
 		"tablist":null,
 		"tab":[],
 		"content":[]
 	},
-	"inputs": {
+	"inputs":{
 		"debt":null,
-		"wolf": {
+		"stats":{
+			"painR":null,
+			"painT":null,
+			"arousalR":null,
+			"arousalT":null,
+			"fatigueR":null,
+			"fatigueT":null,
+			"stressR":null,
+			"stressT":null,
+			"traumaR":null,
+			"traumaT":null,
+			"controlR":null,
+			"controlT":null
+		},
+		"wolf":{
 			"harmonyR":null,
 			"harmonyT":null,
 			"ferocityR":null,
 			"ferocityT":null
 		}
 	},
-	"versions": {
+	"versions":{
 		"game":"0.5.3.7",
 		"DoLE":"0.15"
 	},
 	"styles":{
-		"table": {"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"},
-		"tbody": {},
-		"tr": {"style":"border-bottom:1px solid white;"},
-		"td": {"style":"border-left:1px solid white; width:40%;"}
+		"table":{"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"},
+		"tbody":{},
+		"tr":{"style":"border-bottom:1px solid white;"},
+		"td":{"style":"border-left:1px solid white; width:40%;"}
 	},
 	"init":function(){
 		// Create button, copy base game UI, but position it in the bottom right.
@@ -36,7 +50,7 @@ const DoLE = {
 				"type":"button",
 				"role":"button",
 				"tabindex":"0",
-				"onclick":"DoLE.openMenu()"
+				"onclick":"DoLE.toggleMenu(1)"
 			},
 			document.body,
 			"DoLEdit\n"+DoLE.versions.DoLE
@@ -90,7 +104,7 @@ const DoLE = {
 			{
 				"class":"customOverlayClose",
 				"style":"top:0.8rem",
-				"onclick":"DoLE.closeMenu()"
+				"onclick":"DoLE.toggleMenu(0)"
 			},
 			DoLE.el.tablist
 		);
@@ -275,25 +289,26 @@ const DoLE = {
 	
 		return el;
 	},
-	"openMenu":function(){
-		// Reveal the overlay
-		DoLE.el.menu.classList.remove("hidden");
-	
-		// Change the function on the button to close instead of open
-		DoLE.el.toggle.setAttribute("onclick","DoLE.closeMenu()");
-	
-		// Highlight the button
-		DoLE.el.toggle.classList.add("macro-button-selected");
-	},
-	"closeMenu":function(){
-		// Hide the overlay
-		DoLE.el.menu.classList.add("hidden");
-	
-		// Set the button back to open
-		DoLE.el.toggle.setAttribute("onclick","DoLE.openMenu()");
-	
-		// Remove the button highlight
-		DoLE.el.toggle.classList.remove("macro-button-selected");
+	"toggleMenu":function(toggle){
+		if(toggle){
+			// Reveal the overlay
+			DoLE.el.menu.classList.remove("hidden");
+		
+			// Change the function on the button to close instead of open
+			DoLE.el.toggle.setAttribute("onclick","DoLE.toggleMenu(0)");
+		
+			// Highlight the button
+			DoLE.el.toggle.classList.add("macro-button-selected");
+		} else {
+			// Hide the overlay
+			DoLE.el.menu.classList.add("hidden");
+		
+			// Set the button back to open
+			DoLE.el.toggle.setAttribute("onclick","DoLE.toggleMenu(1)");
+		
+			// Remove the button highlight
+			DoLE.el.toggle.classList.remove("macro-button-selected");
+		}
 	},
 	"switchTab":function(tab){
 		let tabs = DoLE.el.tab;
