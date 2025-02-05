@@ -1,40 +1,44 @@
 // DoLEdit
 const DoLE = {
 	"el":{
-		"toggle":null,
-		"menu":null,
-		"tablist":null,
-		"tab":[],
-		"content":[]
+		"toggle":null, // Button to open/close the menu
+		"menu":null, // The menu itself
+		"tablist":null, // Tab list container
+		"tab":[], // Tabs array
+		"content":[] // Content for each tab
 	},
-	"inputs":{
-		"debt":null,
-		"stats":{
-			"painR":null,
-			"painT":null,
-			"arousalR":null,
-			"arousalT":null,
-			"fatigueR":null,
-			"fatigueT":null,
-			"stressR":null,
-			"stressT":null,
-			"traumaR":null,
-			"traumaT":null,
-			"controlR":null,
-			"controlT":null
+	"input":{ // R=range, T=textbox
+		"debt":null, // Bailey's debt
+		"stat":{
+			"pain":{"r":null,"t":null},
+			"arousal":{"r":null,"t":null},
+			"fatigue":{"r":null,"t":null},
+			"stress":{"r":null,"t":null},
+			"trauma":{"r":null,"t":null},
+			"control":{"r":null,"t":null}
 		},
-		"wolf":{
-			"harmonyR":null,
-			"harmonyT":null,
-			"ferocityR":null,
-			"ferocityT":null
+		"soc":{
+			"wolf":{
+				"harmony":{"r":null,"t":null},
+				"ferocity":{"r":null,"t":null}
+			},
+		},
+		"tf":{
+			"wolf":{"r":null,"t":null},
+			"cat":{"r":null,"t":null},
+			"cow":{"r":null,"t":null},
+			"fox":{"r":null,"t":null},
+			"bird":{"r":null,"t":null},
+			"angel":{"r":null,"t":null},
+			"fangel":{"r":null,"t":null},
+			"demon":{"r":null,"t":null}
 		}
 	},
 	"versions":{
 		"game":"0.5.3.7",
 		"DoLE":"0.15"
 	},
-	"styles":{
+	"styles":{ // All styles, easier to have everything in one place.
 		"table":{"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"},
 		"tbody":{},
 		"tr":{"style":"border-bottom:1px solid white;"},
@@ -132,7 +136,7 @@ const DoLE = {
 		// Bailey's debt
 		let DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
 		
-		DoLE.inputs.debt = DoLE.newElement(
+		DoLE.input.debt = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEDebt",
@@ -190,7 +194,7 @@ const DoLE = {
 		DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
 
 		// Apparently harmony/ferocity is between 0-20, 0-100%, but it can go above 20
-		DoLE.inputs.wolf.harmonyR = DoLE.newElement(
+		DoLE.input.soc.wolf.harmony.r = DoLE.newElement(
 			"input",
 			{
 				"name":"DolEWolfHarmonyRange",
@@ -200,12 +204,12 @@ const DoLE = {
 				"step":"5",
 				"max":"100",
 				"value":Math.floor(((SugarCube.State.variables.wolfpackharmony)/20)*100),
-				"oninput":"DoLE.inputs.wolf.harmonyT.value = this.value",
-				"onchange":"DoLE.inputs.wolf.harmonyT.value = this.value"
+				"oninput":"DoLE.input.soc.wolf.harmony.t.value = this.value",
+				"onchange":"DoLE.input.soc.wolf.harmony.t.value = this.value"
 			},
 			DoLETD
 		);
-		DoLE.inputs.wolf.harmonyT = DoLE.newElement(
+		DoLE.input.soc.wolf.harmony.t = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEWolfHarmonyText",
@@ -215,8 +219,8 @@ const DoLE = {
 				"class":"macro-textbox",
 				"style":"width:5%; min-width:3em",
 				"value":Math.floor(((SugarCube.State.variables.wolfpackharmony)/20)*100),
-				"oninput":"DoLE.inputs.wolf.harmonyR.value = this.value",
-				"onchange":"DoLE.inputs.wolf.harmonyR.value = this.value"
+				"oninput":"DoLE.input.soc.wolf.harmony.r.value = this.value",
+				"onchange":"DoLE.input.soc.wolf.harmony.r.value = this.value"
 			},
 			DoLETD
 		);
@@ -233,7 +237,7 @@ const DoLE = {
 		// Wolfpack ferocity
 		DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
 
-		DoLE.inputs.wolf.ferocityR = DoLE.newElement(
+		DoLE.input.soc.wolf.ferocityR = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEWolfFerocityRange",
@@ -243,12 +247,12 @@ const DoLE = {
 				"step":"5",
 				"max":"100",
 				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
-				"oninput":"DoLE.inputs.wolf.ferocityT.value = this.value",
-				"onchange":"DoLE.inputs.wolf.ferocityT.value = this.value"
+				"oninput":"DoLE.input.soc.wolf.ferocityT.value = this.value",
+				"onchange":"DoLE.input.soc.wolf.ferocityT.value = this.value"
 			},
 			DoLETD
 		);
-		DoLE.inputs.wolf.ferocityT = DoLE.newElement(
+		DoLE.input.soc.wolf.ferocityT = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEWolfFerocityText",
@@ -258,8 +262,8 @@ const DoLE = {
 				"class":"macro-textbox",
 				"style":"width:5%; min-width:3em",
 				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
-				"oninput":"DoLE.inputs.wolf.ferocityR.value = this.value",
-				"onchange":"DoLE.inputs.wolf.ferocityR.value = this.value"
+				"oninput":"DoLE.input.soc.wolf.ferocityR.value = this.value",
+				"onchange":"DoLE.input.soc.wolf.ferocityR.value = this.value"
 			},
 			DoLETD
 		);
@@ -325,7 +329,7 @@ const DoLE = {
 		}
 	},
 	"setDebt":function(){
-		let debt = DoLE.inputs.debt.value*100;
+		let debt = DoLE.input.debt.value*100;
 		let olddebt = SugarCube.State.variables.rentmoney;
 	
 		// Set the value to the input if a value was provided, otherwise just invert the debt.
@@ -337,6 +341,7 @@ const DoLE = {
 		
 		alert("Bailey Debt: £"+(olddebt*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
 	},
+	"setStat":function(stat){},
 	"cleanBody":function(){
 		// let bl = SugarCube.State.variables.player.bodyliquid;
 	
@@ -355,7 +360,7 @@ const DoLE = {
 			case "wolfpack":
 				if(stat==="harmony"){
 					// Pack harmony/ferocity is from 0-20+
-					let harmony = 20*(DoLE.inputs.wolf.harmonyT.value/100);
+					let harmony = 20*(DoLE.input.soc.wolf.harmony.t.value/100);
 					let oldharmony = SugarCube.State.variables.wolfpackharmony;
 			
 					SugarCube.State.variables.wolfpackharmony = harmony;
@@ -363,7 +368,7 @@ const DoLE = {
 					alert("Wolfpack Harmony: "+Math.floor((oldharmony/20)*100)+"% is now "+Math.floor((harmony/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
 				} else if(stat==="ferocity"){
 					// Pack harmony/ferocity is from 0-20+
-					let ferocity = 20*(DoLE.inputs.wolf.ferocityT.value/100);
+					let ferocity = 20*(DoLE.input.soc.wolf.ferocityT.value/100);
 					let oldferocity = SugarCube.State.variables.wolfpackferocity;
 			
 					SugarCube.State.variables.wolfpackferocity = ferocity;
@@ -374,7 +379,8 @@ const DoLE = {
 			default:
 				break;
 		}
-	}
+	},
+	"setTF":function(tf){}
 };
 
 DoLE.init();
