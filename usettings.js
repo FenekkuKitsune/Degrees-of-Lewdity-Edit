@@ -34,15 +34,22 @@ const DoLE = {
 			"demon":{"r":null,"t":null}
 		}
 	},
-	"versions":{
+	"versions":{ // Tracking the game's version and our version for compatability
 		"game":"0.5.3.7",
 		"DoLE":"0.15"
 	},
 	"styles":{ // All styles, easier to have everything in one place.
-		"table":{"style":"border-top:1px solid white; border-right:1px solid white; width:100%;"},
-		"tbody":{},
-		"tr":{"style":"border-bottom:1px solid white;"},
-		"td":{"style":"border-left:1px solid white; width:40%;"}
+		"toggle":"position:fixed; right:0em; bottom:0em; max-width:initial; width:5em;",
+		"menu":"display:block; position: fixed; right:6em; bottom:0em; width:50em; height:20em; line-height:1.5em; text-align:left;",
+		"titlebar":"display:flex; flex-wrap:wrap; align-items:center; padding:0.5rem; padding-bottom:0;",
+		"close":"top:0.8rem",
+		"content":"position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);",
+		"table":"border-top:1px solid white; border-right:1px solid white; width:100%;",
+		"tr":"border-bottom:1px solid white;",
+		"td":"border-left:1px solid white; width:40%;",
+		"textbox":"width:5%; min-width:3em",
+		"button":"padding:0.3em;",
+		"range":"vertical-align:middle;"
 	},
 	"init":function(){
 		// Create button, copy base game UI, but position it in the bottom right.
@@ -50,7 +57,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"link-internal macro-button",
-				"style":"position:fixed; right:0em; bottom:0em; max-width:initial; width:5em;",
+				"style":DoLE.styles.toggle,
 				"type":"button",
 				"role":"button",
 				"tabindex":"0",
@@ -64,14 +71,14 @@ const DoLE = {
 		DoLE.el.menu = DoLE.newElement(
 			"div",
 			{
-				"style":"display:block; position: fixed; right:6em; bottom:0em; width:50em; height:20em; line-height:1.5em; text-align:left;",
+				"style":DoLE.styles.menu,
 				"class":"hidden"
 			},
 			document.body
 		);
 
 		// Title bar
-		let DoLETitleBar = DoLE.newElement("div", {"style":"display:flex; flex-wrap:wrap; align-items:center; padding:0.5rem; padding-bottom:0;"}, DoLE.el.menu);
+		let DoLETitleBar = DoLE.newElement("div", {"style":DoLE.styles.titlebar}, DoLE.el.menu);
 
 		// Tab list
 		DoLE.el.tablist = DoLE.newElement("div", {"class":"tab"}, DoLETitleBar);
@@ -107,7 +114,7 @@ const DoLE = {
 			"div",
 			{
 				"class":"customOverlayClose",
-				"style":"top:0.8rem",
+				"style":DoLE.styles.close,
 				"onclick":"DoLE.toggleMenu(0)"
 			},
 			DoLE.el.tablist
@@ -117,7 +124,7 @@ const DoLE = {
 		for(let i=0; i<4; i++){
 			DoLE.el.content.push(DoLE.newElement(
 				"div",
-				{"style":"position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);"},
+				{"style":DoLE.styles.content},
 				DoLE.el.menu
 			));
 			// First tab is always selected initially
@@ -127,14 +134,14 @@ const DoLE = {
 		}
 
 		// Tab 1 - General
-		let DoLETable = DoLE.newElement("table", DoLE.styles.table, DoLE.el.content[0]);
+		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[0]);
 		
-		let DoLETBody = DoLE.newElement("tbody", DoLE.styles.tbody, DoLETable);
+		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
 		
-		let DoLETR = DoLE.newElement("tr", DoLE.styles.tr, DoLETBody);
+		let DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
 		
 		// Bailey's debt
-		let DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
+		let DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
 		
 		DoLE.input.debt = DoLE.newElement(
 			"input",
@@ -144,7 +151,7 @@ const DoLE = {
 				"inputmode":"text",
 				"tabindex":"0",
 				"class":"macro-textbox",
-				"style":"width:5%; min-width:3em",
+				"style":DoLE.styles.textbox,
 				"placeholder":-Math.abs(SugarCube.State.variables.rentmoney*0.01)
 			},
 			DoLETD
@@ -153,7 +160,7 @@ const DoLE = {
 		let DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":"padding:0.3em;",
+				"style":DoLE.styles.button,
 				"onclick":"DoLE.setDebt()"
 			},
 			DoLETD,
@@ -163,20 +170,20 @@ const DoLE = {
 		// Tab 2 - Stats
 		
 		// Tab 3 - Body
-		DoLETable = DoLE.newElement("table", DoLE.styles.table, DoLE.el.content[2]);
+		DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[2]);
 		
-		DoLETBody = DoLE.newElement("tbody", DoLE.styles.tbody, DoLETable);
+		DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
 		
-		DoLETR = DoLE.newElement("tr", DoLE.styles.tr, DoLETBody);
+		DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
 		
 		// Clean Body
-		DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
+		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
 		
 		// In Future: Specify levels to set body clean states
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":"padding:0.3em",
+				"style":DoLE.styles.button,
 				"onclick":"DoLE.cleanBody()"
 			},
 			DoLETD,
@@ -184,14 +191,14 @@ const DoLE = {
 		);
 
 		// Tab 4 - Social
-		DoLETable = DoLE.newElement("table", DoLE.styles.table, DoLE.el.content[3]);
+		DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[3]);
 
-		DoLETBody = DoLE.newElement("tbody", DoLE.styles.tbody, DoLETable);
+		DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
 
-		DoLETR = DoLE.newElement("tr", DoLE.styles.tr, DoLETBody);
+		DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
 
 		// Wolfpack harmony
-		DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
+		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
 
 		// Apparently harmony/ferocity is between 0-20, 0-100%, but it can go above 20
 		DoLE.input.soc.wolf.harmony.r = DoLE.newElement(
@@ -199,7 +206,7 @@ const DoLE = {
 			{
 				"name":"DolEWolfHarmonyRange",
 				"type":"range",
-				"style":"vertical-align:middle;",
+				"style":DoLE.styles.range,
 				"min":"0",
 				"step":"5",
 				"max":"100",
@@ -217,7 +224,7 @@ const DoLE = {
 				"inputmode":"text",
 				"tabindex":"0",
 				"class":"macro-textbox",
-				"style":"width:5%; min-width:3em",
+				"style":DoLE.styles.textbox,
 				"value":Math.floor(((SugarCube.State.variables.wolfpackharmony)/20)*100),
 				"oninput":"DoLE.input.soc.wolf.harmony.r.value = this.value",
 				"onchange":"DoLE.input.soc.wolf.harmony.r.value = this.value"
@@ -227,7 +234,7 @@ const DoLE = {
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":"padding:0.3em",
+				"style":DoLE.styles.button,
 				"onclick":"DoLE.setSocial('wolfpack', 'harmony')"
 			},
 			DoLETD,
@@ -235,14 +242,14 @@ const DoLE = {
 		);
 
 		// Wolfpack ferocity
-		DoLETD = DoLE.newElement("td", DoLE.styles.td, DoLETR);
+		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
 
-		DoLE.input.soc.wolf.ferocityR = DoLE.newElement(
+		DoLE.input.soc.wolf.ferocity.r = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEWolfFerocityRange",
 				"type":"range",
-				"style":"vertical-align:middle;",
+				"style":DoLE.styles.range,
 				"min":"0",
 				"step":"5",
 				"max":"100",
@@ -252,7 +259,7 @@ const DoLE = {
 			},
 			DoLETD
 		);
-		DoLE.input.soc.wolf.ferocityT = DoLE.newElement(
+		DoLE.input.soc.wolf.ferocity.t = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEWolfFerocityText",
@@ -260,7 +267,7 @@ const DoLE = {
 				"inputmode":"text",
 				"tabindex":"0",
 				"class":"macro-textbox",
-				"style":"width:5%; min-width:3em",
+				"style":DoLE.styles.textbox,
 				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
 				"oninput":"DoLE.input.soc.wolf.ferocityR.value = this.value",
 				"onchange":"DoLE.input.soc.wolf.ferocityR.value = this.value"
@@ -270,7 +277,7 @@ const DoLE = {
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":"padding:0.3em",
+				"style":DoLE.styles.button,
 				"onclick":"DoLE.setSocial('wolfpack', 'ferocity')"
 			},
 			DoLETD,
@@ -368,7 +375,7 @@ const DoLE = {
 					alert("Wolfpack Harmony: "+Math.floor((oldharmony/20)*100)+"% is now "+Math.floor((harmony/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
 				} else if(stat==="ferocity"){
 					// Pack harmony/ferocity is from 0-20+
-					let ferocity = 20*(DoLE.input.soc.wolf.ferocityT.value/100);
+					let ferocity = 20*(DoLE.input.soc.wolf.ferocity.t.value/100);
 					let oldferocity = SugarCube.State.variables.wolfpackferocity;
 			
 					SugarCube.State.variables.wolfpackferocity = ferocity;
