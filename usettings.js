@@ -35,32 +35,44 @@ const DoLE = {
 	},
 	"versions":{ // Tracking the game's version and our version for compatability
 		"game":"0.5.3.7",
-		"DoLE":"0.17"
-	},
-	"styles":{ // All styles, easier to have everything in one place.
-		"toggle":"position:fixed; right:0em; bottom:0em; max-width:initial; width:5em;",
-		"menu":"display:block; position: fixed; right:6em; bottom:0em; width:50em; height:20em; line-height:1.5em; text-align:left;",
-		"titlebar":"display:flex; flex-wrap:wrap; align-items:center; padding:0.5rem; padding-bottom:0;",
-		"close":"top:0.8rem",
-		"content":"position:relative; padding:0.5rem; margin:0.5em; margin-top:0; z-index:0; border:1px solid var(--150); border-top:0; background-color:var(--850); overflow-y:scroll; height:calc(100% - 60px);",
-		"table":"border-top:1px solid white; border-right:1px solid white; width:100%;",
-		"tr":"border-bottom:1px solid white;",
-		"td":"border-left:1px solid white; width:40%;",
-		"textbox":"width:5%; min-width:3em",
-		"button":"padding:0.3em;",
-		"range":"vertical-align:middle;"
+		"DoLE":"0.18"
 	},
 	"init":function(){
 		// We can conveniently copy a lot of the base-game classes
 		// It allows us to copy styles and features, and it doesn't break anything!
 		// We put necessary elements into variables for later usage.
 
+		// Create our own stylesheet for specific styles
+		// We don't need to format it this way, I just like the readability
+		let stylesheet = "/* DoLEdit Stylesheet */";
+		stylesheet += "\n#DoLEToggle {\n\tposition:fixed;\n\tright:0em;\n\tbottom:0em;\n\tmax-width:initial;\n\twidth:5em;\n}";
+		stylesheet += "\n\n#DoLEMenu {\n\tdisplay:block;\n\tposition:fixed;\n\tright:6em;\n\tbottom:0em;\n\twidth:50em;\n\theight:20em;\n\tline-height:1.5em;\n\ttext-align:left;\n}";
+		stylesheet += "\n\n#DoLETitleBar {\n\tdisplay:flex;\n\tflex-wrap:wrap;\n\talign-items:center;\n\tpadding:0.5em;\n\tpadding-bottom:0;\n}";
+		stylesheet += "\n\n#DoLECloseButton {\n\ttop:0.8rem;\n}";
+		stylesheet += "\n\n.dole-content {\n\tposition:relative;\n\tpadding:0.5rem;\n\tmargin:0.5em;\n\tmargin-top:0;\n\tz-index:0;\n\tborder:1px solid var(--150);\n\tborder-top:0;\n\tbackground-color:var(--850);\n\toverflow-y:scroll;\n\theight:calc(100% - 60px);\n}";
+		stylesheet += "\n\n.dole-table {\n\tborder-top:1px solid white;\n\tborder-right:1px solid white;\n\twidth:100%;\n}";
+		stylesheet += "\n\n.dole-tr {\n\tborder-bottom:1px solid white;\n}";
+		stylesheet += "\n\n.dole-td {\n\tborder-left:1px solid white;\n\twidth:40%;\n}";
+		stylesheet += "\n\n.dole-range {\n\tvertical-align:middle;\n\twidth:10em;\n}";
+		stylesheet += "\n\n.dole-textbox {\n\twidth:5%;\n\tmin-width:3em !important; /* Override base game styles */\n}"; // We need to specify important to override the base game's styles
+		stylesheet += "\n\n.dole-button {\n\tpadding:0.3em;\n}";
+
+		let DoLEStyles = DoLE.newElement(
+			"style",
+			{
+				"id":"DoLEStyles",
+				"type":"text/css"
+			},
+			document.head,
+			stylesheet	
+		);
+
 		// Create the menu toggle button. Position it in the bottom right corner because it's out of the way and an unused space.
 		DoLE.el.toggle = DoLE.newElement(
 			"button",
 			{
-				"class":"link-internal macro-button",
-				"style":DoLE.styles.toggle,
+				"id":"DoLEToggle",
+				"class":"link-internal macro-button", // We don't need to specify link-internal but we copy base game classes just in case
 				"type":"button",
 				"role":"button",
 				"tabindex":"0",
@@ -74,14 +86,14 @@ const DoLE = {
 		DoLE.el.menu = DoLE.newElement(
 			"div",
 			{
-				"style":DoLE.styles.menu,
+				"id":"DoLEMenu",
 				"class":"hidden"
 			},
 			document.body
 		);
 
 		// The title bar is where all the tabs are put. We don't need to track it because it doesn't do much.
-		let DoLETitleBar = DoLE.newElement("div", {"style":DoLE.styles.titlebar}, DoLE.el.menu);
+		let DoLETitleBar = DoLE.newElement("div", {"id":"DoLETitleBar"}, DoLE.el.menu);
 
 		// The tab list is a simple container that holds all the tabs and the close button. We don't need to keep track of it.
 		let tablist = DoLE.newElement("div", {"class":"tab"}, DoLETitleBar);
@@ -112,8 +124,8 @@ const DoLE = {
 		let DoLEClose = DoLE.newElement(
 			"div",
 			{
+				"id":"DoLECloseButton",
 				"class":"customOverlayClose",
-				"style":DoLE.styles.close,
 				"onclick":"DoLE.toggleMenu(0)"
 			},
 			tablist
@@ -123,7 +135,7 @@ const DoLE = {
 		for(let i=0; i<4; i++){
 			DoLE.el.content.push(DoLE.newElement(
 				"div",
-				{"style":DoLE.styles.content},
+				{"class":"dole-content"},
 				DoLE.el.menu
 			));
 			// First tab is always selected initially
@@ -140,14 +152,14 @@ const DoLE = {
 	"tab1":function(){ // General settings
 		DoLE.el.tab[0].appendChild(document.createTextNode("Game"));
 
-		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[0]);
+		let DoLETable = DoLE.newElement("table", {"class":"dole-table"}, DoLE.el.content[0]);
 		
 		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
 		
-		let DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+		let DoLETR = DoLE.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 		
 		// Bailey's debt
-		let DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		let DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 		
 		DoLE.input.debt = DoLE.newElement(
 			"input",
@@ -156,8 +168,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox",
-				"style":DoLE.styles.textbox,
+				"class":"macro-textbox dole-textbox",
 				"placeholder":-Math.abs(SugarCube.State.variables.rentmoney*0.01)
 			},
 			DoLETD
@@ -166,7 +177,7 @@ const DoLE = {
 		let DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":DoLE.styles.button,
+				"class":"dole-button",
 				"onclick":"DoLE.setDebt()"
 			},
 			DoLETD,
@@ -176,21 +187,21 @@ const DoLE = {
 	"tab2":function(){ // Player stats
 		DoLE.el.tab[1].appendChild(document.createTextNode("Stats"));
 
-		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[1]);
+		let DoLETable = DoLE.newElement("table", {"class":"dole-table"}, DoLE.el.content[1]);
 
 		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
 
-		let DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+		let DoLETR = DoLE.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 
 		// Pain
-		let DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		let DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 
 		DoLE.input.stat.pain.r = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEPainRange",
 				"type":"range",
-				"style":DoLE.styles.range,
+				"class":"dole-range",
 				"min":"0",
 				"step":"1",
 				"max":"100",
@@ -207,8 +218,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox",
-				"style":DoLE.styles.textbox,
+				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.pain),
 				"oninput":"DoLE.input.stat.pain.r.value = this.value",
 				"onchange":"DoLE.input.stat.pain.r.value = this.value"
@@ -218,7 +228,7 @@ const DoLE = {
 		let DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":DoLE.styles.button,
+				"class":"dole-button",
 				"onclick":"DoLE.setStat('pain')"
 			},
 			DoLETD,
@@ -226,14 +236,14 @@ const DoLE = {
 		);
 
 		// Arousal
-		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 
 		DoLE.input.stat.arousal.r = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEArousalRange",
 				"type":"range",
-				"style":DoLE.styles.range,
+				"class":"dole-range",
 				"min":"0",
 				"step":"1",
 				"max":SugarCube.State.variables.arousalmax,
@@ -250,8 +260,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox",
-				"style":DoLE.styles.textbox,
+				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.arousal),
 				"oninput":"DoLE.input.stat.arousal.r.value = this.value",
 				"onchange":"DoLE.input.stat.arousal.r.value = this.value"
@@ -261,7 +270,7 @@ const DoLE = {
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":DoLE.styles.button,
+				"class":"dole-button",
 				"onclick":"DoLE.setStat('arousal')"
 			},
 			DoLETD,
@@ -269,16 +278,16 @@ const DoLE = {
 		);
 
 		// Fatigue
-		DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+		DoLETR = DoLE.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 
-		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 
 		DoLE.input.stat.fatigue.r = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEFatigueRange",
 				"type":"range",
-				"style":DoLE.styles.range,
+				"class":"dole-range",
 				"min":"0",
 				"step":"1",
 				"max":"2000",
@@ -295,8 +304,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox",
-				"style":DoLE.styles.textbox,
+				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.tiredness),
 				"oninput":"DoLE.input.stat.fatigue.r.value = this.value",
 				"onchange":"DoLE.input.stat.fatigue.r.value = this.value"
@@ -306,7 +314,7 @@ const DoLE = {
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":DoLE.styles.button,
+				"class":"dole-button",
 				"onclick":"DoLE.setStat('fatigue')"
 			},
 			DoLETD,
@@ -314,14 +322,14 @@ const DoLE = {
 		);
 
 		// Stress
-		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 
 		DoLE.input.stat.stress.r = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEStressRange",
 				"type":"range",
-				"style":DoLE.styles.range,
+				"class":"dole-range",
 				"min":"0",
 				"step":"1",
 				"max":SugarCube.State.variables.stressmax,
@@ -338,8 +346,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox",
-				"style":DoLE.styles.textbox,
+				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.stress),
 				"oninput":"DoLE.input.stat.stress.r.value = this.value",
 				"onchange":"DoLE.input.stat.stress.r.value = this.value"
@@ -349,7 +356,7 @@ const DoLE = {
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":DoLE.styles.button,
+				"class":"dole-button",
 				"onclick":"DoLE.setStat('stress')"
 			},
 			DoLETD,
@@ -357,16 +364,16 @@ const DoLE = {
 		);
 
 		// Trauma
-		DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+		DoLETR = DoLE.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 
-		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 
 		DoLE.input.stat.trauma.r = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLETraumaRange",
 				"type":"range",
-				"style":DoLE.styles.range,
+				"class":"dole-range",
 				"min":"0",
 				"step":"1",
 				"max":SugarCube.State.variables.traumamax,
@@ -383,8 +390,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox",
-				"style":DoLE.styles.textbox,
+				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.trauma),
 				"oninput":"DoLE.input.stat.trauma.r.value = this.value",
 				"onchange":"DoLE.input.stat.trauma.r.value = this.value"
@@ -394,7 +400,7 @@ const DoLE = {
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":DoLE.styles.button,
+				"class":"dole-button",
 				"onclick":"DoLE.setStat('trauma')"
 			},
 			DoLETD,
@@ -402,14 +408,14 @@ const DoLE = {
 		);
 
 		// Control
-		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 
 		DoLE.input.stat.control.r = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEControlRange",
 				"type":"range",
-				"style":DoLE.styles.range,
+				"class":"dole-range",
 				"min":"0",
 				"step":"1",
 				"max":SugarCube.State.variables.controlmax,
@@ -426,8 +432,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox",
-				"style":DoLE.styles.textbox,
+				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.control),
 				"oninput":"DoLE.input.stat.control.r.value = this.value",
 				"onchange":"DoLE.input.stat.control.r.value = this.value"
@@ -437,7 +442,7 @@ const DoLE = {
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":DoLE.styles.button,
+				"class":"dole-button",
 				"onclick":"DoLE.setStat('control')"
 			},
 			DoLETD,
@@ -447,20 +452,20 @@ const DoLE = {
 	"tab3":function(){ // Body stats, liquids, TF's
 		DoLE.el.tab[2].appendChild(document.createTextNode("Body"));
 
-		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[2]);
+		let DoLETable = DoLE.newElement("table", {"class":"dole-table"}, DoLE.el.content[2]);
 		
 		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
 		
-		let DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+		let DoLETR = DoLE.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 		
 		// Clean Body
-		let DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		let DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 		
 		// In Future: Specify levels to set body clean states
 		let DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":DoLE.styles.button,
+				"class":"dole-button",
 				"onclick":"DoLE.cleanBody()"
 			},
 			DoLETD,
@@ -470,14 +475,14 @@ const DoLE = {
 	"tab4":function(){ // Social stats
 		DoLE.el.tab[3].appendChild(document.createTextNode("Social"));
 
-		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[3]);
+		let DoLETable = DoLE.newElement("table", {"class":"dole-table"}, DoLE.el.content[3]);
 
 		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
 
-		let DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+		let DoLETR = DoLE.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 
 		// Wolfpack harmony
-		let DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		let DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 
 		// Apparently harmony/ferocity is between 0-20, 0-100%, but it can go above 20
 		DoLE.input.soc.wolf.harmony.r = DoLE.newElement(
@@ -485,7 +490,7 @@ const DoLE = {
 			{
 				"name":"DolEWolfHarmonyRange",
 				"type":"range",
-				"style":DoLE.styles.range,
+				"class":"dole-range",
 				"min":"0",
 				"step":"5",
 				"max":"100",
@@ -502,8 +507,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox",
-				"style":DoLE.styles.textbox,
+				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(((SugarCube.State.variables.wolfpackharmony)/20)*100),
 				"oninput":"DoLE.input.soc.wolf.harmony.r.value = this.value",
 				"onchange":"DoLE.input.soc.wolf.harmony.r.value = this.value"
@@ -513,7 +517,7 @@ const DoLE = {
 		let DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":DoLE.styles.button,
+				"class":"dole-button",
 				"onclick":"DoLE.setSocial('wolfpack', 'harmony')"
 			},
 			DoLETD,
@@ -521,14 +525,14 @@ const DoLE = {
 		);
 
 		// Wolfpack ferocity
-		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 
 		DoLE.input.soc.wolf.ferocity.r = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEWolfFerocityRange",
 				"type":"range",
-				"style":DoLE.styles.range,
+				"class":"dole-range",
 				"min":"0",
 				"step":"5",
 				"max":"100",
@@ -545,8 +549,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox",
-				"style":DoLE.styles.textbox,
+				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
 				"oninput":"DoLE.input.soc.wolf.ferocity.r.value = this.value",
 				"onchange":"DoLE.input.soc.wolf.ferocity.r.value = this.value"
@@ -556,7 +559,7 @@ const DoLE = {
 		DoLEButton = DoLE.newElement(
 			"button",
 			{
-				"style":DoLE.styles.button,
+				"class":"dole-button",
 				"onclick":"DoLE.setSocial('wolfpack', 'ferocity')"
 			},
 			DoLETD,
@@ -606,10 +609,10 @@ const DoLE = {
 		for(let i=0; i<tabs.length; i++){
 			if(i!==tab){
 				tabs[i].classList.remove("tab-selected");
-				contents[i].setAttribute("class","hidden");
+				contents[i].classList.add("hidden");
 			} else{
 				tabs[i].classList.add("tab-selected");
-				contents[i].setAttribute("class","");
+				contents[i].classList.remove("hidden");
 			}
 		}
 	},
