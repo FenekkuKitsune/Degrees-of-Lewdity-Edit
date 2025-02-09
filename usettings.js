@@ -642,29 +642,19 @@ const DoLE = {
 		alert("Body cleaned of all external liquids");
 	},
 	"setSocial":function(npc, stat){
-		switch (npc) {
-			case "wolfpack":
-				if(stat==="harmony"){
+		let val = 0;
+		let vanval = { // These are values translated for Sugarcube
+			"harmony":"wolfpackharmony",
+			"ferocity":"wolfpackferocity"
+		};
+		if (npc==="wolfpack") {
 					// Pack harmony/ferocity is from 0-20+
-					let harmony = 20*(DoLE.input.soc.wolf.harmony.t.value/100);
-					let oldharmony = SugarCube.State.variables.wolfpackharmony;
-			
-					SugarCube.State.variables.wolfpackharmony = harmony;
-			
-					alert("Wolfpack Harmony: "+Math.floor((oldharmony/20)*100)+"% is now "+Math.floor((harmony/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
-				} else if(stat==="ferocity"){
-					// Pack harmony/ferocity is from 0-20+
-					let ferocity = 20*(DoLE.input.soc.wolf.ferocity.t.value/100);
-					let oldferocity = SugarCube.State.variables.wolfpackferocity;
-			
-					SugarCube.State.variables.wolfpackferocity = ferocity;
-			
-					alert("Wolfpack Ferocity: "+Math.floor((oldferocity/20)*100)+"% is now "+Math.floor((ferocity/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
-				}
-				break;
-			default:
-				break;
+			val = 20*(DoLE.input.soc.wolf[stat].t.value/100);
 		}
+			
+		SugarCube.State.variables[vanval[stat]] = val;
+
+		alert("Wolfpack stat changed");
 	},
 	"setTF":function(tf){}
 };
