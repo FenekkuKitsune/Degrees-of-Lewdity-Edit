@@ -175,6 +175,269 @@ const DoLE = {
 	},
 	"tab2":function(){ // Player stats
 		DoLE.el.tab[1].appendChild(document.createTextNode("Stats"));
+
+		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[1]);
+
+		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
+
+		let DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+
+		// Pain
+		let DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+
+		DoLE.input.stat.pain.r = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEPainRange",
+				"type":"range",
+				"style":DoLE.styles.range,
+				"min":"0",
+				"max":"100",
+				"value":Math.floor(SugarCube.State.variables.pain),
+				"oninput":"DoLE.input.stat.pain.t.value = this.value",
+				"onchange":"DoLE.input.stat.pain.t.value = this.value"
+			},
+			DoLETD
+		);
+		DoLE.input.stat.pain.t = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEPainText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox",
+				"style":DoLE.styles.textbox,
+				"value":Math.floor(SugarCube.State.variables.pain),
+				"oninput":"DoLE.input.stat.pain.r.value = this.value",
+				"onchange":"DoLE.input.stat.pain.r.value = this.value"
+			},
+			DoLETD
+		)
+		let DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"style":DoLE.styles.button,
+				"onclick":"DoLE.setStat('pain')"
+			},
+			DoLETD,
+			"Pain"
+		);
+
+		// Arousal
+		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+
+		DoLE.input.stat.arousal.r = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEArousalRange",
+				"type":"range",
+				"style":DoLE.styles.range,
+				"min":"0",
+				"max":SugarCube.State.variables.arousalmax,
+				"value":Math.floor(SugarCube.State.variables.arousal),
+				"oninput":"DoLE.input.stat.arousal.t.value = this.value",
+				"onchange":"DoLE.input.stat.arousal.t.value = this.value"
+			},
+			DoLETD
+		);
+		DoLE.input.stat.arousal.t = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEArousalText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox",
+				"style":DoLE.styles.textbox,
+				"value":Math.floor(SugarCube.State.variables.arousal),
+				"oninput":"DoLE.input.stat.arousal.r.value = this.value",
+				"onchange":"DoLE.input.stat.arousal.r.value = this.value"
+			},
+			DoLETD
+		);
+		DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"style":DoLE.styles.button,
+				"onclick":"DoLE.setStat('arousal')"
+			},
+			DoLETD,
+			"Arousal"
+		);
+
+		// Fatigue
+		DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+
+		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+
+		DoLE.input.stat.fatigue.r = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEFatigueRange",
+				"type":"range",
+				"style":DoLE.styles.range,
+				"min":"0",
+				"max":"2000",
+				"value":Math.floor(SugarCube.State.variables.tiredness),
+				"oninput":"DoLE.input.stat.fatigue.t.value = this.value",
+				"onchange":"DoLE.input.stat.fatigue.t.value = this.value"
+			},
+			DoLETD
+		);
+		DoLE.input.stat.fatigue.t = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEFatigueText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox",
+				"style":DoLE.styles.textbox,
+				"value":Math.floor(SugarCube.State.variables.tiredness),
+				"oninput":"DoLE.input.stat.fatigue.r.value = this.value",
+				"onchange":"DoLE.input.stat.fatigue.r.value = this.value"
+			},
+			DoLETD
+		);
+		DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"style":DoLE.styles.button,
+				"onclick":"DoLE.setStat('fatigue')"
+			},
+			DoLETD,
+			"Fatigue"
+		);
+
+		// Stress
+		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+
+		DoLE.input.stat.stress.r = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEStressRange",
+				"type":"range",
+				"style":DoLE.styles.range,
+				"min":"0",
+				"max":SugarCube.State.variables.stressmax,
+				"value":Math.floor(SugarCube.State.variables.stress),
+				"oninput":"DoLE.input.stat.stress.t.value = this.value",
+				"onchange":"DoLE.input.stat.stress.t.value = this.value"
+			},
+			DoLETD
+		);
+		DoLE.input.stat.stress.t = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEStressText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox",
+				"style":DoLE.styles.textbox,
+				"value":Math.floor(SugarCube.State.variables.stress),
+				"oninput":"DoLE.input.stat.stress.r.value = this.value",
+				"onchange":"DoLE.input.stat.stress.r.value = this.value"
+			},
+			DoLETD
+		);
+		DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"style":DoLE.styles.button,
+				"onclick":"DoLE.setStat('stress')"
+			},
+			DoLETD,
+			"Stress"
+		);
+
+		// Trauma
+		DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+
+		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+
+		DoLE.input.stat.trauma.r = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLETraumaRange",
+				"type":"range",
+				"style":DoLE.styles.range,
+				"min":"0",
+				"max":SugarCube.State.variables.traumamax,
+				"value":Math.floor(SugarCube.State.variables.trauma),
+				"oninput":"DoLE.input.stat.trauma.t.value = this.value",
+				"onchange":"DoLE.input.stat.trauma.t.value = this.value"
+			},
+			DoLETD
+		);
+		DoLE.input.stat.trauma.t = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLETraumaText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox",
+				"style":DoLE.styles.textbox,
+				"value":Math.floor(SugarCube.State.variables.trauma),
+				"oninput":"DoLE.input.stat.trauma.r.value = this.value",
+				"onchange":"DoLE.input.stat.trauma.r.value = this.value"
+			},
+			DoLETD
+		);
+		DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"style":DoLE.styles.button,
+				"onclick":"DoLE.setStat('trauma')"
+			},
+			DoLETD,
+			"Trauma"
+		);
+
+		// Control
+		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+
+		DoLE.input.stat.control.r = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEControlRange",
+				"type":"range",
+				"style":DoLE.styles.range,
+				"min":"0",
+				"max":SugarCube.State.variables.controlmax,
+				"value":Math.floor(SugarCube.State.variables.control),
+				"oninput":"DoLE.input.stat.control.t.value = this.value",
+				"onchange":"DoLE.input.stat.control.t.value = this.value"
+			},
+			DoLETD
+		);
+		DoLE.input.stat.control.t = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEControlText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox",
+				"style":DoLE.styles.textbox,
+				"value":Math.floor(SugarCube.State.variables.control),
+				"oninput":"DoLE.input.stat.control.r.value = this.value",
+				"onchange":"DoLE.input.stat.control.r.value = this.value"
+			},
+			DoLETD
+		);
+		DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"style":DoLE.styles.button,
+				"onclick":"DoLE.setStat('control')"
+			},
+			DoLETD,
+			"Control"
+		)
+	},
 	"tab3":function(){ // Body stats, liquids, TF's
 		DoLE.el.tab[2].appendChild(document.createTextNode("Body"));
 
@@ -357,7 +620,14 @@ const DoLE = {
 		
 		alert("Bailey Debt: £"+(olddebt*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
 	},
-	"setStat":function(stat){},
+	"setStat":function(stat){
+		// Pain 0-100
+		// Arousal 0-max
+		// Fatigue 0-2000
+		// Stress 0-max, stressgain stresssaved??
+		// Trauma 0-max, traumagain traumasaved??
+		// Control 0-max controlstart??
+	},
 	"cleanBody":function(){
 		// let bl = SugarCube.State.variables.player.bodyliquid;
 	
