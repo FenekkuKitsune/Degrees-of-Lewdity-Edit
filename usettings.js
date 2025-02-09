@@ -35,7 +35,7 @@ const DoLE = {
 	},
 	"versions":{ // Tracking the game's version and our version for compatability
 		"game":"0.5.3.7",
-		"DoLE":"0.15"
+		"DoLE":"0.16"
 	},
 	"styles":{ // All styles, easier to have everything in one place.
 		"toggle":"position:fixed; right:0em; bottom:0em; max-width:initial; width:5em;",
@@ -107,14 +107,8 @@ const DoLE = {
 			}
 		}
 
-		// Tab names.
-		DoLE.el.tab[0].appendChild(document.createTextNode("Game"));
-		DoLE.el.tab[1].appendChild(document.createTextNode("Stats"));
-		DoLE.el.tab[2].appendChild(document.createTextNode("Body"));
-		DoLE.el.tab[3].appendChild(document.createTextNode("Social"));
-
 		// The close button doesn't need to be tracked.
-		// Buttons have a handy onclick attribute we use for functions.
+		// Buttons have a handy onclick attribute we use for the relevant functions.
 		let DoLEClose = DoLE.newElement(
 			"div",
 			{
@@ -138,7 +132,15 @@ const DoLE = {
 			}
 		}
 
-		// Tab 1 - General
+		DoLE.tab1();
+		DoLE.tab2();
+		DoLE.tab3();
+		DoLE.tab4();
+	},
+	"tab1":function(){
+		// First tab is general game settings.
+		DoLE.el.tab[0].appendChild(document.createTextNode("Game"));
+
 		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[0]);
 		
 		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
@@ -171,21 +173,26 @@ const DoLE = {
 			DoLETD,
 			"Debt"
 		);
+	},
+	"tab2":function(){
+		// Second tab is for player stats.
+		DoLE.el.tab[1].appendChild(document.createTextNode("Stats"));
+	},
+	"tab3":function(){
+		// Third tab is for body stats, liquids, and transformations.
+		DoLE.el.tab[2].appendChild(document.createTextNode("Body"));
+
+		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[2]);
 		
-		// Tab 2 - Stats
+		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
 		
-		// Tab 3 - Body
-		DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[2]);
-		
-		DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
-		
-		DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+		let DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
 		
 		// Clean Body
-		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		let DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
 		
 		// In Future: Specify levels to set body clean states
-		DoLEButton = DoLE.newElement(
+		let DoLEButton = DoLE.newElement(
 			"button",
 			{
 				"style":DoLE.styles.button,
@@ -194,16 +201,19 @@ const DoLE = {
 			DoLETD,
 			"Clean Body"
 		);
+	},
+	"tab4":function(){
+		// Fourth tab is for social stats.
+		DoLE.el.tab[3].appendChild(document.createTextNode("Social"));
 
-		// Tab 4 - Social
-		DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[3]);
+		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[3]);
 
-		DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
+		let DoLETBody = DoLE.newElement("tbody", {}, DoLETable);
 
-		DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
+		let DoLETR = DoLE.newElement("tr", {"style":DoLE.styles.tr}, DoLETBody);
 
 		// Wolfpack harmony
-		DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
+		let DoLETD = DoLE.newElement("td", {"style":DoLE.styles.td}, DoLETR);
 
 		// Apparently harmony/ferocity is between 0-20, 0-100%, but it can go above 20
 		DoLE.input.soc.wolf.harmony.r = DoLE.newElement(
@@ -236,7 +246,7 @@ const DoLE = {
 			},
 			DoLETD
 		);
-		DoLEButton = DoLE.newElement(
+		let DoLEButton = DoLE.newElement(
 			"button",
 			{
 				"style":DoLE.styles.button,
