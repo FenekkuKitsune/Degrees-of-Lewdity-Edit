@@ -4,7 +4,7 @@ Degrees of Lewdity Editor
 
 Please note the contents of this repo and the game it edits is 18+
 
-This is a JavaScript file that adds a menu to the game, allowing the user to easily edit stats in the game [Degrees of Lewdity](https://www.vrelnir.com/). I made this script as I wanted to have fun and mess around in the game without activating the in-game cheats, which will disable the ability to get Feats.
+This is a JavaScript file that adds a menu to the game [Degrees of Lewdity](https://www.vrelnir.com/), allowing the user to easily edit stats in the game. I made this script as I wanted to have fun and mess around in the game without activating the in-game cheats, which will disable the ability to get Feats.
 
 The script is open-source via this repo and easily added to the game via the inbuilt usettings.js file that the game loads by itself. It requires no script injection, does not pull from external libraries, and does not interfere with the game itself outside of accessing and altering the game's variables and HTML.
 
