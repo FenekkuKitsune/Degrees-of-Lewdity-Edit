@@ -527,8 +527,8 @@ const DoLE = {
 				"step":"5",
 				"max":"100",
 				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
-				"oninput":"DoLE.input.soc.wolf.ferocityT.value = this.value",
-				"onchange":"DoLE.input.soc.wolf.ferocityT.value = this.value"
+				"oninput":"DoLE.input.soc.wolf.ferocity.t.value = this.value",
+				"onchange":"DoLE.input.soc.wolf.ferocity.t.value = this.value"
 			},
 			DoLETD
 		);
@@ -542,8 +542,8 @@ const DoLE = {
 				"class":"macro-textbox",
 				"style":DoLE.styles.textbox,
 				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
-				"oninput":"DoLE.input.soc.wolf.ferocityR.value = this.value",
-				"onchange":"DoLE.input.soc.wolf.ferocityR.value = this.value"
+				"oninput":"DoLE.input.soc.wolf.ferocity.r.value = this.value",
+				"onchange":"DoLE.input.soc.wolf.ferocity.r.value = this.value"
 			},
 			DoLETD
 		);
