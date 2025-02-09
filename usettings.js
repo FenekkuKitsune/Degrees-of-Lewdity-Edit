@@ -1,6 +1,6 @@
 // DoLEdit
 const DoLE = {
-	"el":{
+	"el":{ // DOM elements that we need to keep track of
 		"toggle":null, // Button to open/close the menu
 		"menu":null, // The menu itself
 		"tab":[], // Tabs array
@@ -37,7 +37,7 @@ const DoLE = {
 		"game":"0.5.3.7", // Game version, update this as needed
 		"DoLE":"0.18" // DoLE Version, update this as needed
 	},
-	"init":function(){
+	"init":function(){ // Initialisation function
 		let supported = 0;
 
 		for(i = 0; i < SugarCube.State.variables.saveVersions.length; i++) {
@@ -59,8 +59,6 @@ const DoLE = {
 
 		// We can conveniently copy a lot of the base-game classes
 		// It allows us to copy styles and features, and it doesn't break anything!
-		// We put necessary elements into variables for later usage.
-
 		// Create our own stylesheet for specific styles
 		// We don't need to format it this way, I just like the readability
 		let stylesheet = "/* DoLEdit Stylesheet */";
@@ -76,6 +74,7 @@ const DoLE = {
 		stylesheet += "\n\n.dole-textbox {\n\twidth:5%;\n\tmin-width:3em !important; /* Override base game styles */\n}"; // We need to specify important to override the base game's styles
 		stylesheet += "\n\n.dole-button {\n\tpadding:0.3em;\n}";
 
+		// Add our stylesheet to the document head, this conveniently puts it under the usettings.js script tag.
 		let DoLEStyles = DoLE.newElement(
 			"style",
 			{
@@ -585,7 +584,7 @@ const DoLE = {
 			"Wolf Ferocity"
 		);
 	},
-	"newElement":function(type, attrs, appendTo, text=null){
+	"newElement":function(type, attrs, appendTo, text=null){ // Create new DOM elements
 		let el = document.createElement(type);
 	
 		for(let attr in attrs){
@@ -600,7 +599,7 @@ const DoLE = {
 	
 		return el;
 	},
-	"toggleMenu":function(toggle){
+	"toggleMenu":function(toggle){ // Toggle the menu
 		if(toggle){
 			// Reveal the overlay
 			DoLE.el.menu.classList.remove("hidden");
@@ -621,7 +620,7 @@ const DoLE = {
 			DoLE.el.toggle.classList.remove("macro-button-selected");
 		}
 	},
-	"switchTab":function(tab){
+	"switchTab":function(tab){ // Switch between tabs
 		let tabs = DoLE.el.tab;
 		let contents = DoLE.el.content;
 	
@@ -635,7 +634,7 @@ const DoLE = {
 			}
 		}
 	},
-	"setDebt":function(){
+	"setDebt":function(){ // Set Bailey's debt
 		let debt = DoLE.input.debt.value*100;
 		let olddebt = SugarCube.State.variables.rentmoney;
 	
@@ -648,7 +647,7 @@ const DoLE = {
 		
 		alert("Bailey Debt: £"+(olddebt*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
 	},
-	"setStat":function(stat){
+	"setStat":function(stat){ // Set player stats
 		// Pain 0-100
 		// Arousal 0-max
 		// Fatigue 0-2000
@@ -673,7 +672,7 @@ const DoLE = {
 
 		alert((stat.charAt(0).toUpperCase()+stat.slice(1))+": "+Math.floor(oldval)+" is now "+val);
 	},
-	"cleanBody":function(){
+	"cleanBody":function(){ // Clean the player's body, we can update this in future
 		// let bl = SugarCube.State.variables.player.bodyliquid;
 	
 		// Set all body liquids to 0, which cleans the player of all external liquids.
@@ -686,7 +685,7 @@ const DoLE = {
 		
 		alert("Body cleaned of all external liquids");
 	},
-	"setSocial":function(npc, stat){
+	"setSocial":function(npc, stat){ // Set social stats
 		let vanval = { // These are values translated for Sugarcube
 			"harmony":"wolfpackharmony",
 			"ferocity":"wolfpackferocity"
@@ -704,7 +703,7 @@ const DoLE = {
 
 		alert("Wolfpack "+stat+": "+Math.floor((oldval/20)*100)+"% is now "+Math.floor((val/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
 	},
-	"setTF":function(tf){
+	"setTF":function(tf){ // Set TF levels
 		// Wolf
 		// Cat
 		// Cow
@@ -716,4 +715,4 @@ const DoLE = {
 	}
 };
 
-DoLE.init();
+DoLE.init(); // This call needs to be here for DoLEdit to run. Without it, nothing happens.
