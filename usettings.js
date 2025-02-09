@@ -685,7 +685,16 @@ const DoLE = {
 
 		alert("Wolfpack "+stat+": "+Math.floor((oldval/20)*100)+"% is now "+Math.floor((val/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
 	},
-	"setTF":function(tf){}
+	"setTF":function(tf){
+		// Wolf
+		// Cat
+		// Cow
+		// Fox
+		// Bird
+		// Angel
+		// Fallen Angel
+		// Demon
+	}
 };
 
 DoLE.init();
