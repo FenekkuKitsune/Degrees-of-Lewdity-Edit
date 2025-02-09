@@ -34,10 +34,29 @@ const DoLE = {
 		}
 	},
 	"versions":{ // Tracking the game's version and our version for compatability
-		"game":"0.5.3.7",
+		"game":"0.5.3.0",
 		"DoLE":"0.18"
 	},
 	"init":function(){
+		let supported = 0;
+
+		for(i = 0; i < SugarCube.State.variables.saveVersions.length; i++) {
+			if(DoLE.versions.game >= SugarCube.State.variables.saveVersions[i]) { // Versions should always count up.
+				// We're confirmed to support this version
+				supported = 1;
+
+				break;
+			}
+		}
+		if(!supported) {
+			// Warn the player about the unsupported version
+			alert("This game version is not supported on DoLEdit "+DoLE.versions.DoLE+". The last supported version is "+DoLE.versions.game+". Please update DoLE or revert to an earlier version of Degrees of Lewdity.\nYou can still play with this version, however we cannot guarantee everything will work correctly.");
+			console.error("DoLEdit "+DoLE.versions.DoLE+": Unsupported game version. Check https://github.com/FenekkuKitsune/Degrees-of-Lewdity-Edit for an updated version.");
+			
+			// We'll add exclamations to the DoLE version to indicate it's not fully supported
+			DoLE.versions.DoLE = "!"+DoLE.versions.DoLE+"!";
+		}
+
 		// We can conveniently copy a lot of the base-game classes
 		// It allows us to copy styles and features, and it doesn't break anything!
 		// We put necessary elements into variables for later usage.
