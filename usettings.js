@@ -673,8 +673,6 @@ const DoLE = {
 		alert((stat.charAt(0).toUpperCase()+stat.slice(1))+": "+Math.floor(oldval)+" is now "+val);
 	},
 	"cleanBody":function(){ // Clean the player's body, we can update this in future
-		// let bl = SugarCube.State.variables.player.bodyliquid;
-	
 		// Set all body liquids to 0, which cleans the player of all external liquids.
 		for(let area in SugarCube.State.variables.player.bodyliquid){
 			// Set each value individually. This is purely so we can avoid issues if future game updates add other liquids.
