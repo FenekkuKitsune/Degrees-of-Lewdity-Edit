@@ -137,8 +137,7 @@ const DoLE = {
 		DoLE.tab3();
 		DoLE.tab4();
 	},
-	"tab1":function(){
-		// First tab is general game settings.
+	"tab1":function(){ // General settings
 		DoLE.el.tab[0].appendChild(document.createTextNode("Game"));
 
 		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[0]);
@@ -174,12 +173,9 @@ const DoLE = {
 			"Debt"
 		);
 	},
-	"tab2":function(){
-		// Second tab is for player stats.
+	"tab2":function(){ // Player stats
 		DoLE.el.tab[1].appendChild(document.createTextNode("Stats"));
-	},
-	"tab3":function(){
-		// Third tab is for body stats, liquids, and transformations.
+	"tab3":function(){ // Body stats, liquids, TF's
 		DoLE.el.tab[2].appendChild(document.createTextNode("Body"));
 
 		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[2]);
@@ -202,8 +198,7 @@ const DoLE = {
 			"Clean Body"
 		);
 	},
-	"tab4":function(){
-		// Fourth tab is for social stats.
+	"tab4":function(){ // Social stats
 		DoLE.el.tab[3].appendChild(document.createTextNode("Social"));
 
 		let DoLETable = DoLE.newElement("table", {"style":DoLE.styles.table}, DoLE.el.content[3]);
