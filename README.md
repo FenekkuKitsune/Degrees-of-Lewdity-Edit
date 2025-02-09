@@ -16,6 +16,14 @@ Degrees of Lewdity provides inbuilt functionality for custom JavaScript loading,
 
 If you already have a usettings.js file, then you'll need to copy/paste the code into that file instead. Open the usettings.js file on this repo, then click the copy button next to "Raw" on the file's banner. This will put the code into your clipboard. Open your usettings.js file, scroll to the very bottom of the file, and paste the code. Save, then reload Degrees of Lewdity, and the button should appear in the bottom right.
 
+Ensure you've loaded into a game/save before trying to use anything in the DoLEdit menu, as while the menu will still work, none of the changes you make in the menu will apply until a game is loaded.
+
 If you experience any errors, report them on this repo and I'll take a look.
 
 Please note that this script was built for PC first, and as such is untested on mobile or other devices. While the functions themselves should still work as it's simple HTML and JavaScript with a sprinkle of CSS, the menu is unlikely to appear correctly and may thusly be unusable.
+
+## Disclaimer
+
+While I've made every precaution to ensure DoLEdit does not intefere with save data or otherwise break anything, there is no guarantee that this will always be the case. As with any modification to games, there is every possibility that by using this script, something in the game's programming will break. As such, try to ensure you are saving often when using this script, especially before changing any values. In addition, ensure that you are using the most up-to-date version of DoLEdit, and that the version you are using is compatible with the version of the game you are playing. Supported versions with the tool can be found under "Versions" in DoLEdits code. A future planned version will have an in-built warning if you are playing on an unsupported version of the game.
+
+This script cannot, and will not break the HTML file nor save files that comes with the game, nor can it interfere with your computer or browser in any way shape or form. I take no responsibility for misuse of this script.
