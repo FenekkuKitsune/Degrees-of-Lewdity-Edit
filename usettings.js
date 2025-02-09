@@ -3,7 +3,6 @@ const DoLE = {
 	"el":{
 		"toggle":null, // Button to open/close the menu
 		"menu":null, // The menu itself
-		"tablist":null, // Tab list container
 		"tab":[], // Tabs array
 		"content":[] // Content for each tab
 	},
@@ -52,7 +51,11 @@ const DoLE = {
 		"range":"vertical-align:middle;"
 	},
 	"init":function(){
-		// Create button, copy base game UI, but position it in the bottom right.
+		// We can conveniently copy a lot of the base-game classes
+		// It allows us to copy styles and features, and it doesn't break anything!
+		// We put necessary elements into variables for later usage.
+
+		// Create the menu toggle button. Position it in the bottom right corner because it's out of the way and an unused space.
 		DoLE.el.toggle = DoLE.newElement(
 			"button",
 			{
@@ -67,7 +70,7 @@ const DoLE = {
 			"DoLEdit\n"+DoLE.versions.DoLE
 		);
 		
-		// Create menu
+		// Copy the base game overlay menu pretty much 1f1. We squish it to the bottom right, again, so it's out of the way.
 		DoLE.el.menu = DoLE.newElement(
 			"div",
 			{
@@ -77,13 +80,14 @@ const DoLE = {
 			document.body
 		);
 
-		// Title bar
+		// The title bar is where all the tabs are put. We don't need to track it because it doesn't do much.
 		let DoLETitleBar = DoLE.newElement("div", {"style":DoLE.styles.titlebar}, DoLE.el.menu);
 
-		// Tab list
-		DoLE.el.tablist = DoLE.newElement("div", {"class":"tab"}, DoLETitleBar);
+		// The tab list is a simple container that holds all the tabs and the close button. We don't need to keep track of it.
+		let tablist = DoLE.newElement("div", {"class":"tab"}, DoLETitleBar);
 
-		// Tabs
+		// We iterate four times to create the individual tabs, and store them in a tab array.
+		// Why do we iterate? Because we hate repetition!
 		for(let i=0; i<4; i++){
 			DoLE.el.tab.push(DoLE.newElement(
 				"button",
@@ -94,7 +98,7 @@ const DoLE = {
 					"tabindex":"0",
 					"onclick":"DoLE.switchTab("+i+")"
 				},
-				DoLE.el.tablist
+				tablist
 			));
 		
 			// First tab is always selected initially
@@ -103,13 +107,14 @@ const DoLE = {
 			}
 		}
 
-		// Tab names
+		// Tab names.
 		DoLE.el.tab[0].appendChild(document.createTextNode("Game"));
 		DoLE.el.tab[1].appendChild(document.createTextNode("Stats"));
 		DoLE.el.tab[2].appendChild(document.createTextNode("Body"));
 		DoLE.el.tab[3].appendChild(document.createTextNode("Social"));
 
-		// Close button
+		// The close button doesn't need to be tracked.
+		// Buttons have a handy onclick attribute we use for functions.
 		let DoLEClose = DoLE.newElement(
 			"div",
 			{
@@ -117,7 +122,7 @@ const DoLE = {
 				"style":DoLE.styles.close,
 				"onclick":"DoLE.toggleMenu(0)"
 			},
-			DoLE.el.tablist
+			tablist
 		);
 
 		// Content
@@ -286,7 +291,6 @@ const DoLE = {
 	},
 	"newElement":function(type, attrs, appendTo, text=null){
 		let el = document.createElement(type);
-	
 	
 		for(let attr in attrs){
 			el.setAttribute(attr, attrs[attr]);
