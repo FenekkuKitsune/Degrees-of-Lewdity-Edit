@@ -35,7 +35,7 @@ const DoLE = {
 	},
 	"versions":{ // Tracking the game's version and our version for compatability
 		"game":"0.5.3.7",
-		"DoLE":"0.16"
+		"DoLE":"0.17"
 	},
 	"styles":{ // All styles, easier to have everything in one place.
 		"toggle":"position:fixed; right:0em; bottom:0em; max-width:initial; width:5em;",
@@ -192,6 +192,7 @@ const DoLE = {
 				"type":"range",
 				"style":DoLE.styles.range,
 				"min":"0",
+				"step":"1",
 				"max":"100",
 				"value":Math.floor(SugarCube.State.variables.pain),
 				"oninput":"DoLE.input.stat.pain.t.value = this.value",
@@ -234,6 +235,7 @@ const DoLE = {
 				"type":"range",
 				"style":DoLE.styles.range,
 				"min":"0",
+				"step":"1",
 				"max":SugarCube.State.variables.arousalmax,
 				"value":Math.floor(SugarCube.State.variables.arousal),
 				"oninput":"DoLE.input.stat.arousal.t.value = this.value",
@@ -278,6 +280,7 @@ const DoLE = {
 				"type":"range",
 				"style":DoLE.styles.range,
 				"min":"0",
+				"step":"1",
 				"max":"2000",
 				"value":Math.floor(SugarCube.State.variables.tiredness),
 				"oninput":"DoLE.input.stat.fatigue.t.value = this.value",
@@ -320,6 +323,7 @@ const DoLE = {
 				"type":"range",
 				"style":DoLE.styles.range,
 				"min":"0",
+				"step":"1",
 				"max":SugarCube.State.variables.stressmax,
 				"value":Math.floor(SugarCube.State.variables.stress),
 				"oninput":"DoLE.input.stat.stress.t.value = this.value",
@@ -364,6 +368,7 @@ const DoLE = {
 				"type":"range",
 				"style":DoLE.styles.range,
 				"min":"0",
+				"step":"1",
 				"max":SugarCube.State.variables.traumamax,
 				"value":Math.floor(SugarCube.State.variables.trauma),
 				"oninput":"DoLE.input.stat.trauma.t.value = this.value",
@@ -406,6 +411,7 @@ const DoLE = {
 				"type":"range",
 				"style":DoLE.styles.range,
 				"min":"0",
+				"step":"1",
 				"max":SugarCube.State.variables.controlmax,
 				"value":Math.floor(SugarCube.State.variables.control),
 				"oninput":"DoLE.input.stat.control.t.value = this.value",
@@ -627,6 +633,23 @@ const DoLE = {
 		// Stress 0-max, stressgain stresssaved??
 		// Trauma 0-max, traumagain traumasaved??
 		// Control 0-max controlstart??
+		let vanval = { // These are values translated for Sugarcube
+			"pain":"pain",
+			"arousal":"arousal",
+			"fatigue":"tiredness",
+			"stress":"stress",
+			"trauma":"trauma",
+			"control":"control"
+		};
+
+		let val = DoLE.input.stat[stat].t.value;
+		let oldval = SugarCube.State.variables[vanval[stat]];
+
+		SugarCube.State.variables[vanval[stat]] = Math.floor(val); // We floor the value to prevent a weird NaN bug.
+
+		console.log(stat+" set from "+oldval+" to "+val+" and now it's "+SugarCube.State.variables[vanval[stat]]);
+
+		alert((stat.charAt(0).toUpperCase()+stat.slice(1))+": "+Math.floor(oldval)+" is now "+val);
 	},
 	"cleanBody":function(){
 		// let bl = SugarCube.State.variables.player.bodyliquid;
@@ -642,19 +665,22 @@ const DoLE = {
 		alert("Body cleaned of all external liquids");
 	},
 	"setSocial":function(npc, stat){
-		let val = 0;
 		let vanval = { // These are values translated for Sugarcube
 			"harmony":"wolfpackharmony",
 			"ferocity":"wolfpackferocity"
 		};
+
+		let val = 0;
+		let oldval = 0;
 		if (npc==="wolfpack") {
-					// Pack harmony/ferocity is from 0-20+
+			// Pack harmony/ferocity is from 0-20+
 			val = 20*(DoLE.input.soc.wolf[stat].t.value/100);
+			oldval = SugarCube.State.variables[vanval[stat]];
 		}
-			
+
 		SugarCube.State.variables[vanval[stat]] = val;
 
-		alert("Wolfpack stat changed");
+		alert("Wolfpack "+stat+": "+Math.floor((oldval/20)*100)+"% is now "+Math.floor((val/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
 	},
 	"setTF":function(tf){}
 };
