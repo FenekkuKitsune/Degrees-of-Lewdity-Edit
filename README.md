@@ -1,15 +1,21 @@
 # DoLEdit
 
-Degrees of Lewdity edit script (WIP)
+Degrees of Lewdity Editor
 
-This is a usettings.js file that adds a menu to easily edit stats and settings in the game Degrees of Lewdity. I made this script as I wanted to have fun in the game without completely ruining the chance of getting Feats, as the in-game cheats remove Feat gain.
+Please note the contents of this repo and the game it edits is 18+
 
-Currently the file is bare-bones, but I will be working to add basic stat functions, such as changing stress/fatigue/trauma, as well as editing transformation build-up and social stats.
+This is a JavaScript file that adds a menu to the game, allowing the user to easily edit stats in the game [Degrees of Lewdity](https://www.vrelnir.com/). I made this script as I wanted to have fun and mess around in the game without activating the in-game cheats, which will disable the ability to get Feats.
+
+The script is open-source via this repo and easily added to the game via the inbuilt usettings.js file that the game loads by itself. It requires no script injection, does not pull from external libraries, and does not interfere with the game itself outside of accessing and altering the game's variables and HTML.
+
+I plan to work on the script for a good long while, adding things as I find them. I originally created this script for myself, and only decided to put it online for others to use a short while ago. So, the majority of the features will come from me wanting to alter various things about the game. If you want any features added, feel free to add a feature request on the Issues page on this github, and I'll see about figuring it out.
 
 ## How to Use
 
-Degrees of Lewdity provides inbuilt functionality for custom javascript via a user settings file, "usettings.js". As a result, using this file is as simple as downloading it and placing it in your Degrees of Lewdity game folder, alongside the HTML file. The game will automatically pick it up and load it in. The menu will be located alongside the other game buttons, underneath Saves and Options.
+Degrees of Lewdity provides inbuilt functionality for custom JavaScript loading, via a specific file called "usettings.js". As a result, all that needs to be done to add this script to your game is download the "usettings.js" file from this repo, and place it alongside the Degrees of Lewdity html file. If done correctly, you simply need to reload the page in your web browser and the menu button should appear in the bottom right.
 
-If you already have a usettings.js file, you can simply copy/paste the code into your own file.
+If you already have a usettings.js file, then you'll need to copy/paste the code into that file instead. Open the usettings.js file on this repo, then click the copy button next to "Raw" on the file's banner. This will put the code into your clipboard. Open your usettings.js file, scroll to the very bottom of the file, and paste the code. Save, then reload Degrees of Lewdity, and the button should appear in the bottom right.
 
-I've made effort to put every relevant variable into an object, so unless you use DoLEdit as a variable name, there shouldn't be any conflicts. There are some temporary variables used, but if necessary they can fairly easily be changed.
+If you experience any errors, report them on this repo and I'll take a look.
+
+Please note that this script was built for PC first, and as such is untested on mobile or other devices. While the functions themselves should still work as it's simple HTML and JavaScript with a sprinkle of CSS, the menu is unlikely to appear correctly and may thusly be unusable.
