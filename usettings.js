@@ -8,7 +8,7 @@ const DoLE = {
 	},
 	"input":{ // R=range, T=textbox
 		"debt":null, // Bailey's debt
-		"stat":{
+		"stat":{ // Self-explanatory
 			"pain":{"r":null,"t":null},
 			"arousal":{"r":null,"t":null},
 			"fatigue":{"r":null,"t":null},
@@ -17,12 +17,12 @@ const DoLE = {
 			"control":{"r":null,"t":null}
 		},
 		"soc":{
-			"wolf":{
+			"wolf":{ // Wolfpack harmony/ferocity. Displays under "Black Wolf" in the game.
 				"harmony":{"r":null,"t":null},
 				"ferocity":{"r":null,"t":null}
 			},
 		},
-		"tf":{
+		"tf":{ // Self-explanatory
 			"wolf":{"r":null,"t":null},
 			"cat":{"r":null,"t":null},
 			"cow":{"r":null,"t":null},
@@ -33,9 +33,9 @@ const DoLE = {
 			"demon":{"r":null,"t":null}
 		}
 	},
-	"versions":{ // Tracking the game's version and our version for compatability
-		"game":"0.5.3.0",
-		"DoLE":"0.18"
+	"versions":{
+		"game":"0.5.3.7", // Game version, update this as needed
+		"DoLE":"0.18" // DoLE Version, update this as needed
 	},
 	"init":function(){
 		let supported = 0;
