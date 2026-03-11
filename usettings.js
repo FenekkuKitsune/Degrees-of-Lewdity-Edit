@@ -7,7 +7,10 @@ const DoLE = {
 		"content":[] // Content for each tab
 	},
 	"input":{ // R=range, T=textbox
-		"debt":null, // Bailey's debt
+		"game":{
+			"debt":{"t":null}, // Bailey's debt
+			"money":{"t":null} // Player's money
+		},
 		"stat":{ // Self-explanatory
 			"pain":{"r":null,"t":null},
 			"arousal":{"r":null,"t":null},
@@ -35,7 +38,7 @@ const DoLE = {
 	},
 	"versions":{
 		"game":"0.5.8.10", // Supported game version
-		"DoLE":"0.19" // DoLE Version
+		"DoLE":"0.20" // DoLE Version
 	},
 	"init":function(){ // Initialisation function
 		let thisVersion = SugarCube.State.variables.saveVersions[SugarCube.State.variables.saveVersions.length-1]
@@ -160,7 +163,7 @@ const DoLE = {
 		// Bailey's debt
 		let DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
 		
-		DoLE.input.debt = DoLE.newElement(
+		DoLE.input.game.debt.t = DoLE.newElement(
 			"input",
 			{
 				"name":"DoLEDebt",
@@ -168,7 +171,7 @@ const DoLE = {
 				"inputmode":"text",
 				"tabindex":"0",
 				"class":"macro-textbox dole-textbox",
-				"placeholder":-Math.abs(SugarCube.State.variables.rentmoney*0.01)
+				"placeholder":Math.abs(SugarCube.State.variables.rentmoney)
 			},
 			DoLETD
 		);
@@ -177,10 +180,36 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setDebt()"
+				"onclick":"DoLE.setVal('debt')"
 			},
 			DoLETD,
 			"Debt"
+		);
+
+		// Player's money
+		DoLETD = DoLE.newElement("td", {"class":"dole-td"}, DoLETR);
+
+		DoLE.input.game.money.t = DoLE.newElement(
+			"input",
+			{
+				"name":"DoLEMoney",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox dole-textbox",
+				"placeholder":Math.abs(SugarCube.State.variables.money)
+			},
+			DoLETD
+		);
+
+		DoLEButton = DoLE.newElement(
+			"button",
+			{
+				"class":"dole-button",
+				"onclick":"DoLE.setVal('money')"
+			},
+			DoLETD,
+			"Money"
 		);
 	},
 	"tab2":function(){ // Player stats
@@ -228,7 +257,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setStat('pain')"
+				"onclick":"DoLE.setVal('pain')"
 			},
 			DoLETD,
 			"Pain"
@@ -270,7 +299,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setStat('arousal')"
+				"onclick":"DoLE.setVal('arousal')"
 			},
 			DoLETD,
 			"Arousal"
@@ -314,7 +343,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setStat('fatigue')"
+				"onclick":"DoLE.setVal('fatigue')"
 			},
 			DoLETD,
 			"Fatigue"
@@ -356,7 +385,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setStat('stress')"
+				"onclick":"DoLE.setVal('stress')"
 			},
 			DoLETD,
 			"Stress"
@@ -400,7 +429,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setStat('trauma')"
+				"onclick":"DoLE.setVal('trauma')"
 			},
 			DoLETD,
 			"Trauma"
@@ -442,7 +471,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setStat('control')"
+				"onclick":"DoLE.setVal('control')"
 			},
 			DoLETD,
 			"Control"
@@ -615,19 +644,44 @@ const DoLE = {
 			}
 		}
 	},
-	"setDebt":function(){ // Set Bailey's debt
-		let val = DoLE.input.debt.value
-		let debt = DoLE.input.debt.value*100;
-		let olddebt = SugarCube.State.variables.rentmoney;
-	
-		// Set the value to the input if a value was provided, otherwise just invert the debt.
-		if(val!=0){
-			SugarCube.State.variables.rentmoney=debt;
-		} else {
-			SugarCube.State.variables.rentmoney=-Math.abs(SugarCube.State.variables.rentmoney);
+	"setVal":function(tar){
+		// Debt: Integer. Final two digits are removed as they are decimals.
+		// Money: Integer. Final two digits are removed as they are decimals.
+		let gval = { // Game values translated for SugarCube
+			"debt":"rentmoney",
+			"money":"money"
 		}
-		
-		alert("Bailey Debt: £"+(olddebt*0.01)+" is now £"+(SugarCube.State.variables.rentmoney*0.01));
+
+		// Pain: Percent 0-100.
+		// Arousal: Percent 0-max.
+		// Fatigue: Percent 0-2000.
+		// Stress: Percent 0-max.
+		// Trauma: Percent 0-max.
+		// Control: Percent 0-max.
+		let sval = { // Translate values for SugarCube
+			"pain":"pain",
+			"arousal":"arousal",
+			"fatigue":"tiredness",
+			"stress":"stress",
+			"trauma":"trauma",
+			"control":"control"
+		}
+
+		let type = "";
+		if(gval.hasOwnProperty(tar)){
+			type = "game";
+		} else if(sval.hasOwnProperty(tar)){
+			type = "stat";
+		} else {
+			console.error("Unknown value type for "+tar);
+		}
+
+		let oldval = SugarCube.State.variables[gval[tar] || sval[tar]];
+		let val = DoLE.input[type][tar].t.value;
+
+		SugarCube.State.variables[gval[tar] || sval[tar]] = Math.floor(val);
+
+		console.log(tar+" set from "+oldval+" to "+val+" and now it's "+SugarCube.State.variables[gval[tar] || sval[tar]]);
 	},
 	"setStat":function(stat){ // Set player stats
 		// Pain 0-100
@@ -653,7 +707,6 @@ const DoLE = {
 		console.log(stat+" set from "+oldval+" to "+val+" and now it's "+SugarCube.State.variables[vanval[stat]]);
 
 		// alert((stat.charAt(0).toUpperCase()+stat.slice(1))+": "+Math.floor(oldval)+" is now "+val);
-		console.log(this)
 	},
 	"cleanBody":function(){ // Clean the player's body, we can update this in future
 		// Set all body liquids to 0, which cleans the player of all external liquids.
