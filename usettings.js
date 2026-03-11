@@ -34,20 +34,24 @@ const DoLE = {
 		}
 	},
 	"versions":{
-		"game":"0.5.8.10", // Game version, update this as needed
-		"DoLE":"0.18" // DoLE Version, update this as needed
+		"game":"0.5.8.10", // Supported game version
+		"DoLE":"0.19" // DoLE Version
 	},
 	"init":function(){ // Initialisation function
-		for(i = 0; i < SugarCube.State.variables.saveVersions.length; i++) {
-			if(DoLE.versions.game >= SugarCube.State.variables.saveVersions[i]) { // Versions should always count up.
-				alert("This game version is not supported on DoLEdit "+DoLE.versions.DoLE+". The last supported version is "+DoLE.versions.game+". Please update DoLE or revert to an earlier version of Degrees of Lewdity.\nYou can still play with this version, however we cannot guarantee everything will work correctly.");
-				console.error("DoLEdit "+DoLE.versions.DoLE+": Unsupported game version. Check https://github.com/FenekkuKitsune/Degrees-of-Lewdity-Edit for an updated version.");
-				
-				// We'll add exclamations to the DoLE version to indicate it's not fully supported
-				DoLE.versions.DoLE = "!"+DoLE.versions.DoLE+"!";
+		let thisVersion = SugarCube.State.variables.saveVersions[SugarCube.State.variables.saveVersions.length-1]
+		let supported = 0;
 
-				break;
-			}
+		if(DoLE.versions.game >= thisVersion){
+			// We're confirmed to support this version
+			console.log("DoLEdit supports "+DoLE.versions.game+". Game version "+thisVersion+" detected, supported.");
+			supported = 1;
+		} else {
+			// Warn the player about the unsupported version
+			// alert("This game version is not supported on DoLEdit "+DoLE.versions.DoLE+". The last supported version is "+DoLE.versions.game+". Please update DoLE or revert to an earlier version of Degrees of Lewdity.\nYou can still play with this version, however we cannot guarantee everything will work correctly.");
+			console.warn("DoLEdit "+DoLE.versions.DoLE+": Unsupported game version. Check https://github.com/FenekkuKitsune/Degrees-of-Lewdity-Edit for an updated version.");
+			
+			// We'll add exclamations to the DoLE version to indicate it's not fully supported
+			DoLE.versions.DoLE = "!"+DoLE.versions.DoLE+"!";
 		}
 
 		// Add our stylesheet to the document head, this conveniently puts it under the usettings.js script tag.
@@ -647,7 +651,8 @@ const DoLE = {
 
 		console.log(stat+" set from "+oldval+" to "+val+" and now it's "+SugarCube.State.variables[vanval[stat]]);
 
-		alert((stat.charAt(0).toUpperCase()+stat.slice(1))+": "+Math.floor(oldval)+" is now "+val);
+		// alert((stat.charAt(0).toUpperCase()+stat.slice(1))+": "+Math.floor(oldval)+" is now "+val);
+		console.log(this)
 	},
 	"cleanBody":function(){ // Clean the player's body, we can update this in future
 		// Set all body liquids to 0, which cleans the player of all external liquids.
