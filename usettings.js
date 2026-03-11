@@ -616,6 +616,7 @@ const DoLE = {
 		}
 	},
 	"setDebt":function(){ // Set Bailey's debt
+		let val = DoLE.input.debt.value
 		let debt = DoLE.input.debt.value*100;
 		let olddebt = SugarCube.State.variables.rentmoney;
 	
