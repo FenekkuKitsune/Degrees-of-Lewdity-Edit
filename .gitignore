@@ -1,8 +1,4 @@
-img/
-Saves/
-Degrees of Lewdity*.html
-DoL Changelog.txt
-DoL_Installation_Guide.pdf
-DolSettingsExport.json
-Links.txt
-style.css
+# Ignore everything except files relating to this project
+*
+!usettings.js
+!README.md
