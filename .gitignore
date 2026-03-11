@@ -1,4 +1,5 @@
 # Ignore everything except files relating to this project
 *
 !usettings.js
+!ustyles.css
 !README.md

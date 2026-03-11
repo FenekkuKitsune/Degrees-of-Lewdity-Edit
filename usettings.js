@@ -38,51 +38,28 @@ const DoLE = {
 		"DoLE":"0.18" // DoLE Version, update this as needed
 	},
 	"init":function(){ // Initialisation function
-		let supported = 0;
-
 		for(i = 0; i < SugarCube.State.variables.saveVersions.length; i++) {
 			if(DoLE.versions.game >= SugarCube.State.variables.saveVersions[i]) { // Versions should always count up.
-				// We're confirmed to support this version
-				supported = 1;
+				alert("This game version is not supported on DoLEdit "+DoLE.versions.DoLE+". The last supported version is "+DoLE.versions.game+". Please update DoLE or revert to an earlier version of Degrees of Lewdity.\nYou can still play with this version, however we cannot guarantee everything will work correctly.");
+				console.error("DoLEdit "+DoLE.versions.DoLE+": Unsupported game version. Check https://github.com/FenekkuKitsune/Degrees-of-Lewdity-Edit for an updated version.");
+				
+				// We'll add exclamations to the DoLE version to indicate it's not fully supported
+				DoLE.versions.DoLE = "!"+DoLE.versions.DoLE+"!";
 
 				break;
 			}
 		}
-		if(!supported) {
-			// Warn the player about the unsupported version
-			alert("This game version is not supported on DoLEdit "+DoLE.versions.DoLE+". The last supported version is "+DoLE.versions.game+". Please update DoLE or revert to an earlier version of Degrees of Lewdity.\nYou can still play with this version, however we cannot guarantee everything will work correctly.");
-			console.error("DoLEdit "+DoLE.versions.DoLE+": Unsupported game version. Check https://github.com/FenekkuKitsune/Degrees-of-Lewdity-Edit for an updated version.");
-			
-			// We'll add exclamations to the DoLE version to indicate it's not fully supported
-			DoLE.versions.DoLE = "!"+DoLE.versions.DoLE+"!";
-		}
-
-		// We can conveniently copy a lot of the base-game classes
-		// It allows us to copy styles and features, and it doesn't break anything!
-		// Create our own stylesheet for specific styles
-		// We don't need to format it this way, I just like the readability
-		let stylesheet = "/* DoLEdit Stylesheet */";
-		stylesheet += "\n#DoLEToggle {\n\tposition:fixed;\n\tright:0em;\n\tbottom:0em;\n\tmax-width:initial;\n\twidth:5em;\n}";
-		stylesheet += "\n\n#DoLEMenu {\n\tdisplay:block;\n\tposition:fixed;\n\tright:6em;\n\tbottom:0em;\n\twidth:50em;\n\theight:20em;\n\tline-height:1.5em;\n\ttext-align:left;\n}";
-		stylesheet += "\n\n#DoLETitleBar {\n\tdisplay:flex;\n\tflex-wrap:wrap;\n\talign-items:center;\n\tpadding:0.5em;\n\tpadding-bottom:0;\n}";
-		stylesheet += "\n\n#DoLECloseButton {\n\ttop:0.8rem;\n}";
-		stylesheet += "\n\n.dole-content {\n\tposition:relative;\n\tpadding:0.5rem;\n\tmargin:0.5em;\n\tmargin-top:0;\n\tz-index:0;\n\tborder:1px solid var(--150);\n\tborder-top:0;\n\tbackground-color:var(--850);\n\toverflow-y:scroll;\n\theight:calc(100% - 60px);\n}";
-		stylesheet += "\n\n.dole-table {\n\tborder-top:1px solid white;\n\tborder-right:1px solid white;\n\twidth:100%;\n}";
-		stylesheet += "\n\n.dole-tr {\n\tborder-bottom:1px solid white;\n}";
-		stylesheet += "\n\n.dole-td {\n\tborder-left:1px solid white;\n\twidth:40%;\n}";
-		stylesheet += "\n\n.dole-range {\n\tvertical-align:middle;\n\twidth:10em;\n}";
-		stylesheet += "\n\n.dole-textbox {\n\twidth:5%;\n\tmin-width:3em !important; /* Override base game styles */\n}"; // We need to specify important to override the base game's styles
-		stylesheet += "\n\n.dole-button {\n\tpadding:0.3em;\n}";
 
 		// Add our stylesheet to the document head, this conveniently puts it under the usettings.js script tag.
 		let DoLEStyles = DoLE.newElement(
-			"style",
+			"link",
 			{
 				"id":"DoLEStyles",
-				"type":"text/css"
+				"type":"text/css",
+				"rel": "stylesheet",
+				"href": "ustyles.css"
 			},
-			document.head,
-			stylesheet	
+			document.head
 		);
 
 		// Create the menu toggle button. Position it in the bottom right corner because it's out of the way and an unused space.
