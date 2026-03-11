@@ -34,7 +34,7 @@ const DoLE = {
 		}
 	},
 	"versions":{
-		"game":"0.5.3.7", // Game version, update this as needed
+		"game":"0.5.8.10", // Game version, update this as needed
 		"DoLE":"0.18" // DoLE Version, update this as needed
 	},
 	"init":function(){ // Initialisation function
