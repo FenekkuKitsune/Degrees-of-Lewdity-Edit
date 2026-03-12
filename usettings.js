@@ -171,7 +171,7 @@ const DoLE = {
 				"inputmode":"text",
 				"tabindex":"0",
 				"class":"macro-textbox dole-textbox dole-textbox-wide",
-				"placeholder":Math.abs(SugarCube.State.variables.rentmoney)
+				"placeholder":-Math.abs(SugarCube.State.variables.rentmoney/100)
 			},
 			DoLETD
 		);
@@ -180,7 +180,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setDebt()"
+				"onclick":"DoLE.setDebt(DoLE.input.game.debt.t.value)"
 			},
 			DoLETD,
 			"Debt"
@@ -197,7 +197,7 @@ const DoLE = {
 				"inputmode":"text",
 				"tabindex":"0",
 				"class":"macro-textbox dole-textbox dole-textbox-wide",
-				"placeholder":Math.abs(SugarCube.State.variables.money)
+				"placeholder":Math.abs(SugarCube.State.variables.money/100)
 			},
 			DoLETD
 		);
@@ -206,7 +206,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setVal('money')"
+				"onclick":"DoLE.setMoney(DoLE.input.game.money.t.value)"
 			},
 			DoLETD,
 			"Money"
@@ -257,7 +257,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setVal('pain')"
+				"onclick":"DoLE.setStat('pain',DoLE.input.stat.pain.t.value)"
 			},
 			DoLETD,
 			"Pain"
@@ -299,7 +299,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setVal('arousal')"
+				"onclick":"DoLE.setStat('arousal',DoLE.input.stat.arousal.t.value)"
 			},
 			DoLETD,
 			"Arousal"
@@ -343,7 +343,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setVal('fatigue')"
+				"onclick":"DoLE.setStat('fatigue',DoLE.input.stat.fatigue.t.value)"
 			},
 			DoLETD,
 			"Fatigue"
@@ -385,7 +385,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setVal('stress')"
+				"onclick":"DoLE.setStat('stress',DoLE.input.stat.stress.t.value)"
 			},
 			DoLETD,
 			"Stress"
@@ -429,7 +429,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setVal('trauma')"
+				"onclick":"DoLE.setStat('trauma',DoLE.input.stat.trauma.t.value)"
 			},
 			DoLETD,
 			"Trauma"
@@ -471,7 +471,7 @@ const DoLE = {
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setVal('control')"
+				"onclick":"DoLE.setStat('control',DoLE.input.stat.control.t.value)"
 			},
 			DoLETD,
 			"Control"
@@ -644,35 +644,31 @@ const DoLE = {
 			}
 		}
 	},
-	"setDebt":function(){ // Set Bailey's debt
-		let val = this.input.debt.value
-		let debt = this.input.debt.value*100;
+	"setDebt":function(debt){ // Set Bailey's debt
+		debt = debt*100;
 		let olddebt = SugarCube.State.variables.rentmoney;
 	
 		// Set the value to the input if a value was provided, otherwise just invert the debt.
-		if(val!=0){
+		if(debt!=0){
 			SugarCube.State.variables.rentmoney=debt;
+
+			console.log("Debt set from £"+(olddebt*0.01)+" to £"+(debt*0.01)+" and now it's £"+(SugarCube.State.variables.rentmoney*0.01));
 		} else {
 			SugarCube.State.variables.rentmoney=-Math.abs(SugarCube.State.variables.rentmoney);
-		}
 
-		console.log("Debt set from £"+(olddebt*0.01)+" to £"+(SugarCube.State.variables.rentmoney*0.01));
+			console.log("Debt inverted from £"+(olddebt*0.01)+" to £"+(SugarCube.State.variables.rentmoney*0.01));
+		}
 	},
-	"setVal":function(tar){
-		// Debt: Integer
-		// Money: Integer
-		let gval = { // Game values translated for SugarCube
-			"debt":"rentmoney",
-			"money":"money"
-		}
+	"setMoney":function(money){
+		money = money*100;
+		let oldmoney = SugarCube.State.variables.money;
 
-		// Pain: Percent 0-100.
-		// Arousal: Percent 0-max.
-		// Fatigue: Percent 0-2000.
-		// Stress: Percent 0-max.
-		// Trauma: Percent 0-max.
-		// Control: Percent 0-max.
-		let sval = { // Translate values for SugarCube
+		SugarCube.State.variables.money=money;
+
+		console.log("Money set from £"+(oldmoney*0.01)+" to £"+(SugarCube.State.variables.money*0.01));
+	},
+	"setStat":function(stat, value){
+		let stats = {
 			"pain":"pain",
 			"arousal":"arousal",
 			"fatigue":"tiredness",
@@ -681,46 +677,11 @@ const DoLE = {
 			"control":"control"
 		}
 
-		let type = "";
-		if(gval.hasOwnProperty(tar)){
-			type = "game";
-		} else if(sval.hasOwnProperty(tar)){
-			type = "stat";
-		} else {
-			console.error("Unknown value type for "+tar);
-		}
+		let oldval = SugarCube.State.variables[stats[stat]];
+		
+		SugarCube.State.variables[stats[stat]]=Math.floor(value);
 
-		let oldval = SugarCube.State.variables[gval[tar] || sval[tar]];
-		let val = this.input[type][tar].t.value;
-
-		SugarCube.State.variables[gval[tar] || sval[tar]] = Math.floor(val);
-
-		console.log(tar+" set from "+oldval+" to "+val+" and now it's "+SugarCube.State.variables[gval[tar] || sval[tar]]);
-	},
-	"setStat":function(stat){ // Set player stats
-		// Pain 0-100
-		// Arousal 0-max
-		// Fatigue 0-2000
-		// Stress 0-max, stressgain stresssaved??
-		// Trauma 0-max, traumagain traumasaved??
-		// Control 0-max controlstart??
-		let vanval = { // These are values translated for Sugarcube
-			"pain":"pain",
-			"arousal":"arousal",
-			"fatigue":"tiredness",
-			"stress":"stress",
-			"trauma":"trauma",
-			"control":"control"
-		};
-
-		let val = this.input.stat[stat].t.value;
-		let oldval = SugarCube.State.variables[vanval[stat]];
-
-		SugarCube.State.variables[vanval[stat]] = Math.floor(val); // We floor the value to prevent a weird NaN bug.
-
-		console.log(stat+" set from "+oldval+" to "+val+" and now it's "+SugarCube.State.variables[vanval[stat]]);
-
-		// alert((stat.charAt(0).toUpperCase()+stat.slice(1))+": "+Math.floor(oldval)+" is now "+val);
+		console.log(stat+" set from "+oldval+" to "+value+" and now it's "+SugarCube.State.variables[stats[stat]]);
 	},
 	"cleanBody":function(){ // Clean the player's body, we can update this in future
 		// Set all body liquids to 0, which cleans the player of all external liquids.
@@ -751,15 +712,23 @@ const DoLE = {
 
 		alert("Wolfpack "+stat+": "+Math.floor((oldval/20)*100)+"% is now "+Math.floor((val/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
 	},
-	"setTF":function(tf){ // Set TF levels
-		// Wolf
-		// Cat
-		// Cow
-		// Fox
-		// Bird
-		// Angel
-		// Fallen Angel
-		// Demon
+	"setTF":function(tf, value){ // Set TF levels
+		let tfval = {
+			"wolf":"wolfbuild",
+			"cat":"catbuild",
+			"cow":"cowbuild",
+			"fox":"foxbuild",
+			"bird":"birdbuild",
+			"angel":"angelbuild",
+			"fallen":"fallenbuild",
+			"demon":"demonbuild"
+		 };
+
+		 let oldval = SugarCube.State.variables[tfval[tf]];
+
+		 SugarCube.State.variables[tfval[tf]] = Math.floor(value);
+
+		 console.log(tf+" set from "+oldval+" to "+value+" and now it's "+SugarCube.State.variables[tfval[tf]]);
 	}
 };
 
