@@ -170,7 +170,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox dole-textbox",
+				"class":"macro-textbox dole-textbox dole-textbox-wide",
 				"placeholder":Math.abs(SugarCube.State.variables.rentmoney)
 			},
 			DoLETD
@@ -196,7 +196,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"tabindex":"0",
-				"class":"macro-textbox dole-textbox",
+				"class":"macro-textbox dole-textbox dole-textbox-wide",
 				"placeholder":Math.abs(SugarCube.State.variables.money)
 			},
 			DoLETD

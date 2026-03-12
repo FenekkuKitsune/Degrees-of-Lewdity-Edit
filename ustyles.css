@@ -67,6 +67,9 @@
 	width: 5%;
 	min-width: 3em !important; /* Override base game styles */
 }
+.dole-textbox-wide {
+	width: 50%;
+}
 
 .dole-button {
 	padding: 0.3em;
