@@ -38,7 +38,7 @@ const DoLE = {
 	},
 	"versions":{
 		"game":"0.5.8.10", // Supported game version
-		"DoLE":"0.20" // DoLE Version
+		"DoLE":"0.21" // DoLE Version
 	},
 	"init":function(){ // Initialisation function
 		let thisVersion = SugarCube.State.variables.saveVersions[SugarCube.State.variables.saveVersions.length-1]
@@ -498,6 +498,187 @@ const DoLE = {
 			},
 			DoLETD,
 			"Clean Body"
+		);
+
+		// Wolf
+		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		
+		this.input.tf.wolf.t = this.newElement(
+			"input",
+			{
+				"name":"DoLEWolfText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox dole-textbox",
+				"value":Math.floor(SugarCube.State.variables.wolfbuild)
+			},
+			DoLETD
+		)
+		DoLEButton = this.newElement(
+			"button",
+			{
+				"class":"dole-button",
+				"onclick":"DoLE.setTF('wolf', DoLE.input.tf.wolf.t.value)"
+			},
+			DoLETD,
+			"Wolfiness"
+		);
+
+		// Cat
+		DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+
+		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		
+		this.input.tf.cat.t = this.newElement(
+			"input",
+			{
+				"name":"DoLECatText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox dole-textbox",
+				"value":Math.floor(SugarCube.State.variables.catbuild)
+			},
+			DoLETD
+		)
+		DoLEButton = this.newElement(
+			"button",
+			{
+				"class":"dole-button",
+				"onclick":"DoLE.setTF('cat', DoLE.input.tf.cat.t.value)"
+			},
+			DoLETD,
+			"Cattiness"
+		);
+
+		// Cow
+		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		
+		this.input.tf.cow.t = this.newElement(
+			"input",
+			{
+				"name":"DoLECowText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox dole-textbox",
+				"value":Math.floor(SugarCube.State.variables.cowbuild)
+			},
+			DoLETD
+		)
+		DoLEButton = this.newElement(
+			"button",
+			{
+				"class":"dole-button",
+				"onclick":"DoLE.setTF('cow', DoLE.input.tf.cow.t.value)"
+			},
+			DoLETD,
+			"Bovinity"
+		);
+
+		// Harpy
+		DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+		
+		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		
+		this.input.tf.bird.t = this.newElement(
+			"input",
+			{
+				"name":"DoLEBirdText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox dole-textbox",
+				"value":Math.floor(SugarCube.State.variables.birdbuild)
+			},
+			DoLETD
+		)
+		DoLEButton = this.newElement(
+			"button",
+			{
+				"class":"dole-button",
+				"onclick":"DoLE.setTF('bird', DoLE.input.tf.bird.t.value)"
+			},
+			DoLETD,
+			"Harpyness"
+		);
+
+		// Fox
+		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		
+		this.input.tf.fox.t = this.newElement(
+			"input",
+			{
+				"name":"DoLEFoxText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox dole-textbox",
+				"value":Math.floor(SugarCube.State.variables.foxbuild)
+			},
+			DoLETD
+		)
+		DoLEButton = this.newElement(
+			"button",
+			{
+				"class":"dole-button",
+				"onclick":"DoLE.setTF('fox', DoLE.input.tf.fox.t.value)"
+			},
+			DoLETD,
+			"Foxiness"
+		);
+
+		// Angel
+		DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+		
+		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+
+		this.input.tf.angel.t = this.newElement(
+			"input",
+			{
+				"name":"DoLEAngelText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox dole-textbox",
+				"value":Math.floor(SugarCube.State.variables.angelbuild)
+			},
+			DoLETD
+		)
+		DoLEButton = this.newElement(
+			"button",
+			{
+				"class":"dole-button",
+				"onclick":"DoLE.setTF('angel', DoLE.input.tf.angel.t.value)"
+			},
+			DoLETD,
+			"Angelicness"
+		);
+
+		// Demon
+		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+
+		this.input.tf.demon.t = this.newElement(
+			"input",
+			{
+				"name":"DoLEDemonText",
+				"type":"text",
+				"inputmode":"text",
+				"tabindex":"0",
+				"class":"macro-textbox dole-textbox",
+				"value":Math.floor(SugarCube.State.variables.demonbuild)
+			},
+			DoLETD
+		)
+		DoLEButton = this.newElement(
+			"button",
+			{
+				"class":"dole-button",
+				"onclick":"DoLE.setTF('demon', DoLE.input.tf.demon.t.value)"
+			},
+			DoLETD,
+			"Demonicness"
 		);
 	},
 	"tab4":function(){ // Social stats
