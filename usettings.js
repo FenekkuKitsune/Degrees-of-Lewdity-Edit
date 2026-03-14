@@ -1,10 +1,7 @@
 // DoLEdit
 const DoLE = {
-	"el":{ // DOM elements that we need to keep track of
-		"toggle":null, // Button to open/close the menu
-		"menu":null, // The menu itself
-		"tab":[], // Tabs array
-		"content":[] // Content for each tab
+	"el":{ // DOM elements for usage.
+		"input": {} // Input elements, for grabbing values.
 	},
 	"input":{ // R=range, T=textbox
 		"game":{
@@ -38,30 +35,27 @@ const DoLE = {
 	},
 	"versions":{
 		"game":"0.5.8.10", // Supported game version
-		"DoLE":"0.21" // DoLE Version
+		"DoLE":"0.22" // DoLE Version
 	},
-	"init":function(){ // Initialisation function
-		let thisVersion = SugarCube.State.variables.saveVersions[SugarCube.State.variables.saveVersions.length-1]
-		let supported = 0;
+	"_init":function(){ // Init, run on page load.
+		// Version checking
+		let thisVersion = SugarCube.State.variables.saveVersions[SugarCube.State.variables.saveVersions.length-1];
 
 		if(this.versions.game >= thisVersion){
 			// We're confirmed to support this version
-			console.log("DoLEdit supports "+this.versions.game+". Game version "+thisVersion+" detected, supported.");
-			supported = 1;
+			console.log("DoLEdit supports "+this.versions.game+" and onwards. Game version is "+thisVersion+". Have fun!");
 		} else {
 			// Warn the player about the unsupported version
-			// alert("This game version is not supported on DoLEdit "+this.versions.DoLE+". The last supported version is "+this.versions.game+". Please update DoLE or revert to an earlier version of Degrees of Lewdity.\nYou can still play with this version, however we cannot guarantee everything will work correctly.");
-			console.warn("DoLEdit "+this.versions.DoLE+": Unsupported game version. Check https://github.com/FenekkuKitsune/Degrees-of-Lewdity-Edit for an updated version.");
-			
-			// We'll add exclamations to the DoLE version to indicate it's not fully supported
+			console.warn("DoLEdit supports "+this.versions.game+" and onwards. Game version is "+thisVersion+". This version is not supported and errors may occur!\nCheck https://github.com/FenekkuKitsune/Degrees-of-Lewdity-Edit for updates.");
+
+			// Add exclamations to the DoLE version to indicate it's not fully supported
 			this.versions.DoLE = "!"+this.versions.DoLE+"!";
 		}
 
-		// Add our stylesheet to the document head, this conveniently puts it under the usettings.js script tag.
-		let DoLEStyles = this.newElement(
+		// Add our stylesheet to the document head.
+		this.newElement(
 			"link",
 			{
-				"id":"DoLEStyles",
 				"type":"text/css",
 				"rel": "stylesheet",
 				"href": "ustyles.css"
@@ -69,425 +63,198 @@ const DoLE = {
 			document.head
 		);
 
-		// Create the menu toggle button. Position it in the bottom right corner because it's out of the way and an unused space.
+		// Create the menu toggle button in the bottom right corner, as it's an unused space.
 		this.el.toggle = this.newElement(
 			"button",
 			{
 				"id":"DoLEToggle",
-				"class":"link-internal macro-button", // We don't need to specify link-internal but we copy base game classes just in case
+				"class":"macro-button", // We use base game classes for styling consistency.
 				"type":"button",
 				"role":"button",
-				"tabindex":"0",
 				"onclick":"DoLE.toggleMenu(1)"
 			},
 			document.body,
 			"DoLEdit\n"+this.versions.DoLE
 		);
-		
-		// Copy the base game overlay menu pretty much 1f1. We squish it to the bottom right, again, so it's out of the way.
+
+		// Copy the base game overlay for styling consistency. We don't copy it fully, as the funtionality is different and we don't need the extra elements.
 		this.el.menu = this.newElement(
 			"div",
 			{
 				"id":"DoLEMenu",
-				"class":"hidden"
+				"class":"hidden" // Start with the menu hidden.
 			},
 			document.body
-		);
+		)
 
-		// The title bar is where all the tabs are put. We don't need to track it because it doesn't do much.
+		// Titlebar and tab list. We only track these elements temporarily so we can append elements to them.
 		let DoLETitleBar = this.newElement("div", {"id":"DoLETitleBar"}, this.el.menu);
+		let tablist = this.newElement("div", {"class":"tab"}, DoLETitleBar); // tab class for styling consistency
 
-		// The tab list is a simple container that holds all the tabs and the close button. We don't need to keep track of it.
-		let tablist = this.newElement("div", {"class":"tab"}, DoLETitleBar);
+		let tabs = [];
 
-		// We iterate four times to create the individual tabs, and store them in a tab array.
-		// Why do we iterate? Because we hate repetition!
 		for(let i=0; i<4; i++){
-			this.el.tab.push(this.newElement(
+			tabs.push(this.newElement(
 				"button",
 				{
 					"class":"link-internal macro-button",
 					"type":"button",
 					"role":"button",
-					"tabindex":"0",
 					"onclick":"DoLE.switchTab("+i+")"
 				},
 				tablist
 			));
-		
-			// First tab is always selected initially
-			if(i===0){
-				this.el.tab[i].classList.add("tab-selected");
-			}
 		}
+		// First tab is always selected initially
+		tabs[0].classList.add("tab-selected");
 
-		// The close button doesn't need to be tracked.
-		// Buttons have a handy onclick attribute we use for the relevant functions.
-		let DoLEClose = this.newElement(
+		this.el.tabs = tabs;
+
+		// Close button
+		this.newElement(
 			"div",
 			{
-				"id":"DoLECloseButton",
+				"id":"DoLEClose",
 				"class":"customOverlayClose",
 				"onclick":"DoLE.toggleMenu(0)"
 			},
-			tablist
+			tablist,
 		);
+
+		let contents = [];
 
 		// Content
 		for(let i=0; i<4; i++){
-			this.el.content.push(this.newElement(
+			contents.push(this.newElement(
 				"div",
 				{"class":"dole-content"},
 				this.el.menu
 			));
-			// First tab is always selected initially
-			if(i!==0){
-				this.el.content[i].classList.add("hidden");
-			}
 		}
+		contents[0].classList.add("hidden");
 
+		this.el.contents = contents;
+
+		// Initialise each tab's contents.
 		this.tab1();
 		this.tab2();
 		this.tab3();
 		this.tab4();
 	},
 	"tab1":function(){ // General settings
-		this.el.tab[0].appendChild(document.createTextNode("Game"));
+		this.el.tabs[0].appendChild(document.createTextNode("Game"));
 
-		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.content[0]);
-		
+		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.contents[0]);
 		let DoLETBody = this.newElement("tbody", {}, DoLETable);
-		
-		let DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
-		
-		// Bailey's debt
-		let DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
-		
-		this.input.game.debt.t = this.newElement(
+		let DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+
+		// Bailey's debt.
+		let DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
+
+		this.el.input.debt = this.newElement(
 			"input",
 			{
 				"name":"DoLEDebt",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox dole-textbox-wide",
-				"placeholder":-Math.abs(SugarCube.State.variables.rentmoney/100)
+				"placeholdeR":-Math.abs(SugarCube.State.variables.rentmoney/100)
 			},
-			DoLETD
+			DoLETData
 		);
-		
-		let DoLEButton = this.newElement(
+		this.newElement(
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setDebt(DoLE.input.game.debt.t.value)"
+				"onclick":"DoLE.setDebt(DoLE.el.input.debt.value)"
 			},
-			DoLETD,
+			DoLETData,
 			"Debt"
-		);
+		)
 
 		// Player's money
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 
-		this.input.game.money.t = this.newElement(
+		this.el.input.money = this.newElement(
 			"input",
 			{
 				"name":"DoLEMoney",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox dole-textbox-wide",
 				"placeholder":Math.abs(SugarCube.State.variables.money/100)
 			},
-			DoLETD
+			DoLETData
 		);
-
-		DoLEButton = this.newElement(
+		this.newElement(
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setMoney(DoLE.input.game.money.t.value)"
+				"onclick":"DoLE.setMoney(DoLE.el.input.money.value)"
 			},
-			DoLETD,
+			DoLETData,
 			"Money"
 		);
 	},
 	"tab2":function(){ // Player stats
-		this.el.tab[1].appendChild(document.createTextNode("Stats"));
+		this.el.tabs[1].appendChild(document.createTextNode("Stats"));
 
-		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.content[1]);
-
+		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.contents[1]);
 		let DoLETBody = this.newElement("tbody", {}, DoLETable);
+		let DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 
-		let DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
-
-		// Pain
-		let DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
-
-		this.input.stat.pain.r = this.newElement(
-			"input",
-			{
-				"name":"DoLEPainRange",
-				"type":"range",
-				"class":"dole-range",
-				"min":"0",
-				"step":"1",
-				"max":"100",
-				"value":Math.floor(SugarCube.State.variables.pain),
-				"oninput":"DoLE.input.stat.pain.t.value = this.value",
-				"onchange":"DoLE.input.stat.pain.t.value = this.value"
-			},
-			DoLETD
-		);
-		this.input.stat.pain.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEPainText",
-				"type":"text",
-				"inputmode":"text",
-				"tabindex":"0",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.pain),
-				"oninput":"DoLE.input.stat.pain.r.value = this.value",
-				"onchange":"DoLE.input.stat.pain.r.value = this.value"
-			},
-			DoLETD
-		)
-		let DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setStat('pain',DoLE.input.stat.pain.t.value)"
-			},
-			DoLETD,
-			"Pain"
-		);
-
-		// Arousal
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
-
-		this.input.stat.arousal.r = this.newElement(
-			"input",
-			{
-				"name":"DoLEArousalRange",
-				"type":"range",
-				"class":"dole-range",
-				"min":"0",
-				"step":"1",
-				"max":SugarCube.State.variables.arousalmax,
-				"value":Math.floor(SugarCube.State.variables.arousal),
-				"oninput":"DoLE.input.stat.arousal.t.value = this.value",
-				"onchange":"DoLE.input.stat.arousal.t.value = this.value"
-			},
-			DoLETD
-		);
-		this.input.stat.arousal.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEArousalText",
-				"type":"text",
-				"inputmode":"text",
-				"tabindex":"0",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.arousal),
-				"oninput":"DoLE.input.stat.arousal.r.value = this.value",
-				"onchange":"DoLE.input.stat.arousal.r.value = this.value"
-			},
-			DoLETD
-		);
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setStat('arousal',DoLE.input.stat.arousal.t.value)"
-			},
-			DoLETD,
-			"Arousal"
-		);
-
-		// Fatigue
-		DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
-
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
-
-		this.input.stat.fatigue.r = this.newElement(
-			"input",
-			{
-				"name":"DoLEFatigueRange",
-				"type":"range",
-				"class":"dole-range",
-				"min":"0",
-				"step":"1",
-				"max":"2000",
-				"value":Math.floor(SugarCube.State.variables.tiredness),
-				"oninput":"DoLE.input.stat.fatigue.t.value = this.value",
-				"onchange":"DoLE.input.stat.fatigue.t.value = this.value"
-			},
-			DoLETD
-		);
-		this.input.stat.fatigue.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEFatigueText",
-				"type":"text",
-				"inputmode":"text",
-				"tabindex":"0",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.tiredness),
-				"oninput":"DoLE.input.stat.fatigue.r.value = this.value",
-				"onchange":"DoLE.input.stat.fatigue.r.value = this.value"
-			},
-			DoLETD
-		);
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setStat('fatigue',DoLE.input.stat.fatigue.t.value)"
-			},
-			DoLETD,
-			"Fatigue"
-		);
-
-		// Stress
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
-
-		this.input.stat.stress.r = this.newElement(
-			"input",
-			{
-				"name":"DoLEStressRange",
-				"type":"range",
-				"class":"dole-range",
-				"min":"0",
-				"step":"1",
-				"max":SugarCube.State.variables.stressmax,
-				"value":Math.floor(SugarCube.State.variables.stress),
-				"oninput":"DoLE.input.stat.stress.t.value = this.value",
-				"onchange":"DoLE.input.stat.stress.t.value = this.value"
-			},
-			DoLETD
-		);
-		this.input.stat.stress.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEStressText",
-				"type":"text",
-				"inputmode":"text",
-				"tabindex":"0",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.stress),
-				"oninput":"DoLE.input.stat.stress.r.value = this.value",
-				"onchange":"DoLE.input.stat.stress.r.value = this.value"
-			},
-			DoLETD
-		);
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setStat('stress',DoLE.input.stat.stress.t.value)"
-			},
-			DoLETD,
-			"Stress"
-		);
-
-		// Trauma
-		DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
-
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
-
-		this.input.stat.trauma.r = this.newElement(
-			"input",
-			{
-				"name":"DoLETraumaRange",
-				"type":"range",
-				"class":"dole-range",
-				"min":"0",
-				"step":"1",
-				"max":SugarCube.State.variables.traumamax,
-				"value":Math.floor(SugarCube.State.variables.trauma),
-				"oninput":"DoLE.input.stat.trauma.t.value = this.value",
-				"onchange":"DoLE.input.stat.trauma.t.value = this.value"
-			},
-			DoLETD
-		);
-		this.input.stat.trauma.t = this.newElement(
-			"input",
-			{
-				"name":"DoLETraumaText",
-				"type":"text",
-				"inputmode":"text",
-				"tabindex":"0",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.trauma),
-				"oninput":"DoLE.input.stat.trauma.r.value = this.value",
-				"onchange":"DoLE.input.stat.trauma.r.value = this.value"
-			},
-			DoLETD
-		);
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setStat('trauma',DoLE.input.stat.trauma.t.value)"
-			},
-			DoLETD,
-			"Trauma"
-		);
-
-		// Control
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
-
-		this.input.stat.control.r = this.newElement(
-			"input",
-			{
-				"name":"DoLEControlRange",
-				"type":"range",
-				"class":"dole-range",
-				"min":"0",
-				"step":"1",
-				"max":SugarCube.State.variables.controlmax,
-				"value":Math.floor(SugarCube.State.variables.control),
-				"oninput":"DoLE.input.stat.control.t.value = this.value",
-				"onchange":"DoLE.input.stat.control.t.value = this.value"
-			},
-			DoLETD
-		);
-		this.input.stat.control.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEControlText",
-				"type":"text",
-				"inputmode":"text",
-				"tabindex":"0",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.control),
-				"oninput":"DoLE.input.stat.control.r.value = this.value",
-				"onchange":"DoLE.input.stat.control.r.value = this.value"
-			},
-			DoLETD
-		);
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setStat('control',DoLE.input.stat.control.t.value)"
-			},
-			DoLETD,
+		let statlist = [
+			"Pain",
+			"Arousal",
+			"Tiredness",
+			"Stress",
+			"Trauma",
 			"Control"
-		)
+		]
+
+		let DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
+
+		// TOFIX: 1-3-5 should split onto a new DoLETRow
+		for(let i=0; i<statlist.length; i++){
+			if(i!==0){
+				DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
+			}
+
+			this.el.input[statlist[i].toLowerCase()] = this.newElement(
+				"input",
+				{
+					"name":"DoLE"+statlist[i],
+					"type":"range",
+					"class":"dole-range",
+					"min":"0",
+					"step":"1",
+					"max":"100",
+					"value":Math.floor(SugarCube.State.variables[statlist[i].toLowerCase()])
+				},
+				DoLETData
+			);
+			this.newElement(
+				"button",
+				{
+					"class":"dole-button",
+					"onclick":"DoLE.setStat('"+statlist[i].toLowerCase()+"', DoLE.el.input."+statlist[i].toLowerCase()+".value)"
+				},
+				DoLETData,
+				statlist[i] === "Tiredness" ? "Fatigue" : statlist[i]
+			);
+		}
 	},
 	"tab3":function(){ // Body stats, liquids, TF's
-		this.el.tab[2].appendChild(document.createTextNode("Body"));
+		this.el.tabs[2].appendChild(document.createTextNode("Body"));
 
-		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.content[2]);
+		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.contents[2]);
 		
 		let DoLETBody = this.newElement("tbody", {}, DoLETable);
 		
-		let DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+		let DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 		
 		// Clean Body
-		let DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		let DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 		
 		// In Future: Specify levels to set body clean states
 		let DoLEButton = this.newElement(
@@ -496,12 +263,12 @@ const DoLE = {
 				"class":"dole-button",
 				"onclick":"DoLE.cleanBody()"
 			},
-			DoLETD,
+			DoLETData,
 			"Clean Body"
 		);
 
 		// Wolf
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 		
 		this.input.tf.wolf.t = this.newElement(
 			"input",
@@ -509,11 +276,10 @@ const DoLE = {
 				"name":"DoLEWolfText",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.wolfbuild)
 			},
-			DoLETD
+			DoLETData
 		)
 		DoLEButton = this.newElement(
 			"button",
@@ -521,14 +287,14 @@ const DoLE = {
 				"class":"dole-button",
 				"onclick":"DoLE.setTF('wolf', DoLE.input.tf.wolf.t.value)"
 			},
-			DoLETD,
+			DoLETData,
 			"Wolfiness"
 		);
 
 		// Cat
-		DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+		DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 		
 		this.input.tf.cat.t = this.newElement(
 			"input",
@@ -536,11 +302,10 @@ const DoLE = {
 				"name":"DoLECatText",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.catbuild)
 			},
-			DoLETD
+			DoLETData
 		)
 		DoLEButton = this.newElement(
 			"button",
@@ -548,12 +313,12 @@ const DoLE = {
 				"class":"dole-button",
 				"onclick":"DoLE.setTF('cat', DoLE.input.tf.cat.t.value)"
 			},
-			DoLETD,
+			DoLETData,
 			"Cattiness"
 		);
 
 		// Cow
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 		
 		this.input.tf.cow.t = this.newElement(
 			"input",
@@ -561,11 +326,10 @@ const DoLE = {
 				"name":"DoLECowText",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.cowbuild)
 			},
-			DoLETD
+			DoLETData
 		)
 		DoLEButton = this.newElement(
 			"button",
@@ -573,14 +337,14 @@ const DoLE = {
 				"class":"dole-button",
 				"onclick":"DoLE.setTF('cow', DoLE.input.tf.cow.t.value)"
 			},
-			DoLETD,
+			DoLETData,
 			"Bovinity"
 		);
 
 		// Harpy
-		DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+		DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 		
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 		
 		this.input.tf.bird.t = this.newElement(
 			"input",
@@ -588,11 +352,10 @@ const DoLE = {
 				"name":"DoLEBirdText",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.birdbuild)
 			},
-			DoLETD
+			DoLETData
 		)
 		DoLEButton = this.newElement(
 			"button",
@@ -600,12 +363,12 @@ const DoLE = {
 				"class":"dole-button",
 				"onclick":"DoLE.setTF('bird', DoLE.input.tf.bird.t.value)"
 			},
-			DoLETD,
+			DoLETData,
 			"Harpyness"
 		);
 
 		// Fox
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 		
 		this.input.tf.fox.t = this.newElement(
 			"input",
@@ -613,11 +376,10 @@ const DoLE = {
 				"name":"DoLEFoxText",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.foxbuild)
 			},
-			DoLETD
+			DoLETData
 		)
 		DoLEButton = this.newElement(
 			"button",
@@ -625,14 +387,14 @@ const DoLE = {
 				"class":"dole-button",
 				"onclick":"DoLE.setTF('fox', DoLE.input.tf.fox.t.value)"
 			},
-			DoLETD,
+			DoLETData,
 			"Foxiness"
 		);
 
 		// Angel
-		DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+		DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 		
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 
 		this.input.tf.angel.t = this.newElement(
 			"input",
@@ -640,11 +402,10 @@ const DoLE = {
 				"name":"DoLEAngelText",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.angelbuild)
 			},
-			DoLETD
+			DoLETData
 		)
 		DoLEButton = this.newElement(
 			"button",
@@ -652,12 +413,12 @@ const DoLE = {
 				"class":"dole-button",
 				"onclick":"DoLE.setTF('angel', DoLE.input.tf.angel.t.value)"
 			},
-			DoLETD,
+			DoLETData,
 			"Angelicness"
 		);
 
 		// Demon
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 
 		this.input.tf.demon.t = this.newElement(
 			"input",
@@ -665,11 +426,10 @@ const DoLE = {
 				"name":"DoLEDemonText",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(SugarCube.State.variables.demonbuild)
 			},
-			DoLETD
+			DoLETData
 		)
 		DoLEButton = this.newElement(
 			"button",
@@ -677,21 +437,21 @@ const DoLE = {
 				"class":"dole-button",
 				"onclick":"DoLE.setTF('demon', DoLE.input.tf.demon.t.value)"
 			},
-			DoLETD,
+			DoLETData,
 			"Demonicness"
 		);
 	},
 	"tab4":function(){ // Social stats
-		this.el.tab[3].appendChild(document.createTextNode("Social"));
+		this.el.tabs[3].appendChild(document.createTextNode("Social"));
 
-		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.content[3]);
+		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.contents[3]);
 
 		let DoLETBody = this.newElement("tbody", {}, DoLETable);
 
-		let DoLETR = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+		let DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 
 		// Wolfpack harmony
-		let DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		let DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 
 		// Apparently harmony/ferocity is between 0-20, 0-100%, but it can go above 20
 		this.input.soc.wolf.harmony.r = this.newElement(
@@ -707,7 +467,7 @@ const DoLE = {
 				"oninput":"DoLE.input.soc.wolf.harmony.t.value = this.value",
 				"onchange":"DoLE.input.soc.wolf.harmony.t.value = this.value"
 			},
-			DoLETD
+			DoLETData
 		);
 		this.input.soc.wolf.harmony.t = this.newElement(
 			"input",
@@ -715,13 +475,12 @@ const DoLE = {
 				"name":"DoLEWolfHarmonyText",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(((SugarCube.State.variables.wolfpackharmony)/20)*100),
 				"oninput":"DoLE.input.soc.wolf.harmony.r.value = this.value",
 				"onchange":"DoLE.input.soc.wolf.harmony.r.value = this.value"
 			},
-			DoLETD
+			DoLETData
 		);
 		let DoLEButton = this.newElement(
 			"button",
@@ -729,12 +488,12 @@ const DoLE = {
 				"class":"dole-button",
 				"onclick":"DoLE.setSocial('wolfpack', 'harmony')"
 			},
-			DoLETD,
+			DoLETData,
 			"Wolf Harmony"
 		);
 
 		// Wolfpack ferocity
-		DoLETD = this.newElement("td", {"class":"dole-td"}, DoLETR);
+		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 
 		this.input.soc.wolf.ferocity.r = this.newElement(
 			"input",
@@ -749,7 +508,7 @@ const DoLE = {
 				"oninput":"DoLE.input.soc.wolf.ferocity.t.value = this.value",
 				"onchange":"DoLE.input.soc.wolf.ferocity.t.value = this.value"
 			},
-			DoLETD
+			DoLETData
 		);
 		this.input.soc.wolf.ferocity.t = this.newElement(
 			"input",
@@ -757,13 +516,12 @@ const DoLE = {
 				"name":"DoLEWolfFerocityText",
 				"type":"text",
 				"inputmode":"text",
-				"tabindex":"0",
 				"class":"macro-textbox dole-textbox",
 				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
 				"oninput":"DoLE.input.soc.wolf.ferocity.r.value = this.value",
 				"onchange":"DoLE.input.soc.wolf.ferocity.r.value = this.value"
 			},
-			DoLETD
+			DoLETData
 		);
 		DoLEButton = this.newElement(
 			"button",
@@ -771,7 +529,7 @@ const DoLE = {
 				"class":"dole-button",
 				"onclick":"DoLE.setSocial('wolfpack', 'ferocity')"
 			},
-			DoLETD,
+			DoLETData,
 			"Wolf Ferocity"
 		);
 	},
@@ -812,8 +570,8 @@ const DoLE = {
 		}
 	},
 	"switchTab":function(tab){ // Switch between tabs
-		let tabs = this.el.tab;
-		let contents = this.el.content;
+		let tabs = this.el.tabs;
+		let contents = this.el.contents;
 	
 		for(let i=0; i<tabs.length; i++){
 			if(i!==tab){
@@ -913,4 +671,4 @@ const DoLE = {
 	}
 };
 
-DoLE.init(); // This call needs to be here for DoLEdit to run. Without it, nothing happens.
+DoLE._init();
