@@ -118,7 +118,7 @@ const DoLE = {
 				"class":"customOverlayClose",
 				"onclick":"DoLE.toggleMenu(0)"
 			},
-			tablist,
+			DoLETitleBar,
 		);
 
 		let contents = [];
@@ -130,8 +130,11 @@ const DoLE = {
 				{"class":"dole-content"},
 				this.el.menu
 			));
+
+			if(i !== 0){
+				contents[i].classList.add("hidden");
+			}
 		}
-		contents[0].classList.add("hidden");
 
 		this.el.contents = contents;
 
@@ -201,7 +204,6 @@ const DoLE = {
 
 		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.contents[1]);
 		let DoLETBody = this.newElement("tbody", {}, DoLETable);
-		let DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 
 		let statlist = [
 			"Pain",
@@ -212,12 +214,25 @@ const DoLE = {
 			"Control"
 		]
 
-		let DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
+		let DoLETRow;
+		let DoLETData;
+		let max;
 
-		// TOFIX: 1-3-5 should split onto a new DoLETRow
 		for(let i=0; i<statlist.length; i++){
-			if(i!==0){
+			// Every other cell after the first should be on a new row (1,3,5...)
+			if(i % 2 === 0){
+				DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 				DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
+			} else {
+				DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
+			}
+			
+			if(statlist[i].toLowerCase() === "pain"){ // Pain is 0-100
+				max = 100
+			} else if(statlist[i].toLowerCase() === "tiredness"){ // Tiredness is 0-2000
+				max = 2000
+			} else { // All other stat's max values are specified as vars
+				max = SugarCube.State.variables[statlist[i].toLowerCase()+"max"]
 			}
 
 			this.el.input[statlist[i].toLowerCase()] = this.newElement(
@@ -228,7 +243,7 @@ const DoLE = {
 					"class":"dole-range",
 					"min":"0",
 					"step":"1",
-					"max":"100",
+					"max":max,
 					"value":Math.floor(SugarCube.State.variables[statlist[i].toLowerCase()])
 				},
 				DoLETData
@@ -607,20 +622,11 @@ const DoLE = {
 		console.log("Money set from £"+(oldmoney*0.01)+" to £"+(SugarCube.State.variables.money*0.01));
 	},
 	"setStat":function(stat, value){
-		let stats = {
-			"pain":"pain",
-			"arousal":"arousal",
-			"fatigue":"tiredness",
-			"stress":"stress",
-			"trauma":"trauma",
-			"control":"control"
-		}
-
-		let oldval = SugarCube.State.variables[stats[stat]];
+		let oldval = SugarCube.State.variables[stat];
 		
-		SugarCube.State.variables[stats[stat]]=Math.floor(value);
+		SugarCube.State.variables[stat] = Math.floor(value);
 
-		console.log(stat+" set from "+oldval+" to "+value+" and now it's "+SugarCube.State.variables[stats[stat]]);
+		console.log(stat+" set from "+oldval+" to "+value+" and now it's "+SugarCube.State.variables[stat]);
 	},
 	"cleanBody":function(){ // Clean the player's body, we can update this in future
 		// Set all body liquids to 0, which cleans the player of all external liquids.
