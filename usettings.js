@@ -21,10 +21,10 @@ const DoLE = {
 
 		if(this.versions.game >= thisVersion){
 			// We're confirmed to support this version
-			console.log("DoLEdit supports "+this.versions.game+" and onwards. Game version is "+thisVersion+". Have fun!");
+			console.log("DoLEdit supports "+this.versions.game+" and earlier. Game version is "+thisVersion+". Have fun!");
 		} else {
 			// Warn the player about the unsupported version
-			console.warn("DoLEdit supports "+this.versions.game+" and onwards. Game version is "+thisVersion+". This version is not supported and errors may occur!\nCheck https://github.com/FenekkuKitsune/Degrees-of-Lewdity-Edit for updates.");
+			console.warn("DoLEdit supports "+this.versions.game+" and earlier. Game version is "+thisVersion+". This version is not supported and errors may occur!\nCheck https://github.com/FenekkuKitsune/Degrees-of-Lewdity-Edit for updates.");
 
 			// Add exclamations to the DoLE version to indicate it's not fully supported
 			this.versions.DoLE = "!"+this.versions.DoLE+"!";
