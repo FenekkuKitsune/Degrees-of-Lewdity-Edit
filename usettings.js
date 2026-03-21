@@ -161,7 +161,7 @@ const DoLE = {
 				"type":"text",
 				"inputmode":"text",
 				"class":"macro-textbox dole-textbox dole-textbox-wide",
-				"placeholdeR":-Math.abs(SugarCube.State.variables.rentmoney/100)
+				"placeholder":-Math.abs(SugarCube.State.variables.rentmoney/100)
 			},
 			DoLETData
 		);
@@ -598,6 +598,15 @@ const DoLE = {
 			}
 		}
 	},
+	"confirm":function(el, val, text=false){
+		if(text){
+			el.value = "";
+			el.placeholder = val;
+		}
+
+		el.style.animation = "2s linear dole-confirm";
+		setTimeout(() => { el.style.animation = ""; }, 2000);
+	},
 	"setDebt":function(debt){ // Set Bailey's debt
 		debt = debt*100;
 		let olddebt = SugarCube.State.variables.rentmoney;
@@ -612,6 +621,8 @@ const DoLE = {
 
 			console.log("Debt inverted from £"+(olddebt*0.01)+" to £"+(SugarCube.State.variables.rentmoney*0.01));
 		}
+
+		this.confirm(this.el.input.debt, -Math.abs(SugarCube.State.variables.rentmoney/100));
 	},
 	"setMoney":function(money){
 		money = money*100;
@@ -620,6 +631,8 @@ const DoLE = {
 		SugarCube.State.variables.money=money;
 
 		console.log("Money set from £"+(oldmoney*0.01)+" to £"+(SugarCube.State.variables.money*0.01));
+
+		this.confirm(this.el.input.money, Math.abs(SugarCube.State.variables.money/100));
 	},
 	"setStat":function(stat, value){
 		let oldval = SugarCube.State.variables[stat];
@@ -627,6 +640,8 @@ const DoLE = {
 		SugarCube.State.variables[stat] = Math.floor(value);
 
 		console.log(stat+" set from "+oldval+" to "+value+" and now it's "+SugarCube.State.variables[stat]);
+
+		this.confirm(this.el.input[stat], value);
 	},
 	"cleanBody":function(){ // Clean the player's body, we can update this in future
 		// Set all body liquids to 0, which cleans the player of all external liquids.
@@ -638,24 +653,6 @@ const DoLE = {
 		}
 		
 		alert("Body cleaned of all external liquids");
-	},
-	"setSocial":function(npc, stat){ // Set social stats
-		let vanval = { // These are values translated for Sugarcube
-			"harmony":"wolfpackharmony",
-			"ferocity":"wolfpackferocity"
-		};
-
-		let val = 0;
-		let oldval = 0;
-		if (npc==="wolfpack") {
-			// Pack harmony/ferocity is from 0-20+
-			val = 20*(this.input.soc.wolf[stat].t.value/100);
-			oldval = SugarCube.State.variables[vanval[stat]];
-		}
-
-		SugarCube.State.variables[vanval[stat]] = val;
-
-		alert("Wolfpack "+stat+": "+Math.floor((oldval/20)*100)+"% is now "+Math.floor((val/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
 	},
 	"setTF":function(tf, value){ // Set TF levels
 		let tfval = {
@@ -674,6 +671,24 @@ const DoLE = {
 		 SugarCube.State.variables[tfval[tf]] = Math.floor(value);
 
 		 console.log(tf+" set from "+oldval+" to "+value+" and now it's "+SugarCube.State.variables[tfval[tf]]);
+	},
+	"setSocial":function(npc, stat){ // Set social stats
+		let vanval = { // These are values translated for Sugarcube
+			"harmony":"wolfpackharmony",
+			"ferocity":"wolfpackferocity"
+		};
+
+		let val = 0;
+		let oldval = 0;
+		if (npc==="wolfpack") {
+			// Pack harmony/ferocity is from 0-20+
+			val = 20*(this.input.soc.wolf[stat].t.value/100);
+			oldval = SugarCube.State.variables[vanval[stat]];
+		}
+
+		SugarCube.State.variables[vanval[stat]] = val;
+
+		alert("Wolfpack "+stat+": "+Math.floor((oldval/20)*100)+"% is now "+Math.floor((val/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
 	}
 };
 
