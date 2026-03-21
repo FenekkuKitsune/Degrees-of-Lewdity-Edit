@@ -4,33 +4,11 @@ const DoLE = {
 		"input": {} // Input elements, for grabbing values.
 	},
 	"input":{ // R=range, T=textbox
-		"game":{
-			"debt":{"t":null}, // Bailey's debt
-			"money":{"t":null} // Player's money
-		},
-		"stat":{ // Self-explanatory
-			"pain":{"r":null,"t":null},
-			"arousal":{"r":null,"t":null},
-			"fatigue":{"r":null,"t":null},
-			"stress":{"r":null,"t":null},
-			"trauma":{"r":null,"t":null},
-			"control":{"r":null,"t":null}
-		},
 		"soc":{
 			"wolf":{ // Wolfpack harmony/ferocity. Displays under "Black Wolf" in the game.
 				"harmony":{"r":null,"t":null},
 				"ferocity":{"r":null,"t":null}
 			},
-		},
-		"tf":{ // Self-explanatory
-			"wolf":{"r":null,"t":null},
-			"cat":{"r":null,"t":null},
-			"cow":{"r":null,"t":null},
-			"fox":{"r":null,"t":null},
-			"bird":{"r":null,"t":null},
-			"angel":{"r":null,"t":null},
-			"fangel":{"r":null,"t":null},
-			"demon":{"r":null,"t":null}
 		}
 	},
 	"versions":{
@@ -263,198 +241,64 @@ const DoLE = {
 		this.el.tabs[2].appendChild(document.createTextNode("Body"));
 
 		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.contents[2]);
-		
 		let DoLETBody = this.newElement("tbody", {}, DoLETable);
-		
-		let DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
-		
-		// Clean Body
-		let DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
-		
-		// In Future: Specify levels to set body clean states
-		let DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.cleanBody()"
-			},
-			DoLETData,
-			"Clean Body"
-		);
 
-		// Wolf
-		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
-		
-		this.input.tf.wolf.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEWolfText",
-				"type":"text",
-				"inputmode":"text",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.wolfbuild)
-			},
-			DoLETData
-		)
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setTF('wolf', DoLE.input.tf.wolf.t.value)"
-			},
-			DoLETData,
-			"Wolfiness"
-		);
+		let tflist = [
+			"Wolf",
+			"Cat",
+			"Cow",
+			"Harpy",
+			"Fox",
+			"Angel",
+			"Demon"
+		];
 
-		// Cat
-		DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+		let DoLETRow;
+		let DoLETData;
+		let tf;
 
-		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
-		
-		this.input.tf.cat.t = this.newElement(
-			"input",
-			{
-				"name":"DoLECatText",
-				"type":"text",
-				"inputmode":"text",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.catbuild)
-			},
-			DoLETData
-		)
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setTF('cat', DoLE.input.tf.cat.t.value)"
-			},
-			DoLETData,
-			"Cattiness"
-		);
+		for(let i=0; i<tflist.length; i++){
+			// Every other cell after the first should be on a new row (1,3,5...)
+			if(i % 2 === 0){
+				DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+				DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
+			} else {
+				DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
+			}
 
-		// Cow
-		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
-		
-		this.input.tf.cow.t = this.newElement(
-			"input",
-			{
-				"name":"DoLECowText",
-				"type":"text",
-				"inputmode":"text",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.cowbuild)
-			},
-			DoLETData
-		)
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setTF('cow', DoLE.input.tf.cow.t.value)"
-			},
-			DoLETData,
-			"Bovinity"
-		);
+			if(tflist[i].toLowerCase() === "cow"){
+				tf = "Bovinity";
+			} else if(tflist[i].toLowerCase() === "cat"){
+				tf = "Cattiness";
+			} else if(tflist[i].toLowerCase() === "harpy"){
+				tf = "Harpyness";
+			} else if(tflist[i].toLowerCase() === "angel" || tflist[i].toLowerCase() === "demon"){
+				tf = tflist[i] + "icness";
+			} else {
+				tf = tflist[i] + "iness";
+			}
 
-		// Harpy
-		DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
-		
-		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
-		
-		this.input.tf.bird.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEBirdText",
-				"type":"text",
-				"inputmode":"text",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.birdbuild)
-			},
-			DoLETData
-		)
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setTF('bird', DoLE.input.tf.bird.t.value)"
-			},
-			DoLETData,
-			"Harpyness"
-		);
-
-		// Fox
-		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
-		
-		this.input.tf.fox.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEFoxText",
-				"type":"text",
-				"inputmode":"text",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.foxbuild)
-			},
-			DoLETData
-		)
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setTF('fox', DoLE.input.tf.fox.t.value)"
-			},
-			DoLETData,
-			"Foxiness"
-		);
-
-		// Angel
-		DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
-		
-		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
-
-		this.input.tf.angel.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEAngelText",
-				"type":"text",
-				"inputmode":"text",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.angelbuild)
-			},
-			DoLETData
-		)
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setTF('angel', DoLE.input.tf.angel.t.value)"
-			},
-			DoLETData,
-			"Angelicness"
-		);
-
-		// Demon
-		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
-
-		this.input.tf.demon.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEDemonText",
-				"type":"text",
-				"inputmode":"text",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(SugarCube.State.variables.demonbuild)
-			},
-			DoLETData
-		)
-		DoLEButton = this.newElement(
-			"button",
-			{
-				"class":"dole-button",
-				"onclick":"DoLE.setTF('demon', DoLE.input.tf.demon.t.value)"
-			},
-			DoLETData,
-			"Demonicness"
-		);
+			this.el.input[tflist[i].toLowerCase()] = this.newElement(
+				"input",
+				{
+					"name":"DoLE"+tflist[i],
+					"type":"text",
+					"inputmode":"text",
+					"class":"macro-textbox dole-textbox",
+					"placeholder":Math.floor(SugarCube.State.variables[(tflist[i].toLowerCase() === "harpy" ? "bird" : tflist[i].toLowerCase())+"build"])
+				},
+				DoLETData
+			);
+			this.newElement(
+				"button",
+				{
+					"class":"dole-button",
+					"onclick":"DoLE.setTF('"+tflist[i].toLowerCase()+"', DoLE.el.input."+tflist[i].toLowerCase()+".value)"
+				},
+				DoLETData,
+				tf
+			)
+		}
 	},
 	"tab4":function(){ // Social stats
 		this.el.tabs[3].appendChild(document.createTextNode("Social"));
@@ -671,6 +515,8 @@ const DoLE = {
 		 SugarCube.State.variables[tfval[tf]] = Math.floor(value);
 
 		 console.log(tf+" set from "+oldval+" to "+value+" and now it's "+SugarCube.State.variables[tfval[tf]]);
+
+		 this.confirm(this.el.input[tf], value, true);
 	},
 	"setSocial":function(npc, stat){ // Set social stats
 		let vanval = { // These are values translated for Sugarcube
