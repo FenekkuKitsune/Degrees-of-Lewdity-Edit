@@ -524,7 +524,7 @@ const DoLE = {
 			console.log("Debt inverted from £"+(olddebt*0.01)+" to £"+(SugarCube.State.variables.rentmoney*0.01));
 		}
 
-		this.confirm(this.el.input.debt, -Math.abs(SugarCube.State.variables.rentmoney/100));
+		this.confirm(this.el.input.debt, debt*0.01, true);
 	},
 	"setMoney":function(money){
 		money = money*100;
@@ -534,7 +534,7 @@ const DoLE = {
 
 		console.log("Money set from £"+(oldmoney*0.01)+" to £"+(SugarCube.State.variables.money*0.01));
 
-		this.confirm(this.el.input.money, Math.abs(SugarCube.State.variables.money/100));
+		this.confirm(this.el.input.money, SugarCube.State.variables.money*0.01, true);
 	},
 	"setStat":function(stat, value){
 		let oldval = SugarCube.State.variables[stat];
