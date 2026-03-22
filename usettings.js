@@ -13,7 +13,7 @@ const DoLE = {
 	},
 	"versions":{
 		"game":"0.5.8.10", // Supported game version
-		"DoLE":"0.23" // DoLE Version
+		"DoLE":"0.24" // DoLE Version
 	},
 	"_init":function(){ // Init, run on page load.
 		// Version checking
@@ -197,7 +197,6 @@ const DoLE = {
 		let max;
 
 		for(let i=0; i<statlist.length; i++){
-			// Every other cell after the first should be on a new row (1,3,5...)
 			if(i % 2 === 0){
 				DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 				DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
@@ -266,16 +265,30 @@ const DoLE = {
 				DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 			}
 
-			if(tflist[i].toLowerCase() === "cow"){
-				tf = "Bovinity";
-			} else if(tflist[i].toLowerCase() === "cat"){
-				tf = "Cattiness";
-			} else if(tflist[i].toLowerCase() === "harpy"){
-				tf = "Harpyness";
-			} else if(tflist[i].toLowerCase() === "angel" || tflist[i].toLowerCase() === "demon"){
-				tf = tflist[i] + "icness";
-			} else {
-				tf = tflist[i] + "iness";
+			switch (tflist[i].toLowerCase()) {
+				case "cow":
+					tf = "Bovinity";
+					break;
+			
+				case "cat":
+					tf = "Cattiness";
+					break;
+
+				case "harpy":
+					tf = "Harpyness";
+					break;
+
+				case "angel":
+					tf = "Angelicness";
+					break;
+
+				case "demon":
+					tf = "Demonicness";
+					break;
+
+				default:
+					tf = tflist[i] + "iness";
+					break;
 			}
 
 			this.el.input[tflist[i].toLowerCase()] = this.newElement(
@@ -358,6 +371,84 @@ const DoLE = {
 			DoLETData,
 			"Wolf Ferocity",
 		);
+
+		// Fame
+		let fame = [
+			"Sex", // Sex
+			"Prostitution", // Prostitution
+			"Rape", // Rape
+			"Bestiality", // Bestiality
+			"Exhibitionism", // Exhibitionism
+			"Model", // Modelling
+			// "Pregnancy", // Pregnancy // We won't mess with this one as it's very dependent on pregnancy stats
+			"Scrap", // Combat
+			"Good", // Kindness
+			"Business", // Business
+			"Social" // Socialite
+			// "Pimp", // Seems to be a skullduggery-related stat. Changes the "criminal underworld" line.
+			// "Impreg" // Uncertain. It effects the overall fame, but doesn't have a line in the social window.
+		];
+
+		let max;
+		let name;
+
+		for(let i=0; i<fame.length; i++){
+			if(i % 2 === 0){
+				DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
+				DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
+			} else {
+				DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
+			}
+
+			if(fame[i].toLowerCase() === "pregnancy"){ // Max is based on pregnancy count. Unsure what stat this references.
+				max = 200;
+			} else { // Stat names cap at 1000, but go up to 2000 total.
+				max = 2000;
+			}
+
+			switch (fame[i].toLowerCase()) {
+				case "model":
+					name = "Modelling";
+					break;
+
+				case "scrap":
+					name = "Combat";
+					break;
+
+				case "good":
+					name = "Kindness";
+					break;
+
+				case "social":
+					name = "Socialite";
+					break;
+
+				default:
+					name = fame[i];
+					break;
+			}
+
+			this.el.input[fame[i].toLowerCase()] = this.newElement(
+				"input",
+				{
+					"name":"DoLE"+fame[i],
+					"type":"text",
+					"inputmode":"text",
+					"class":"macro-textbox dole-textbox",
+					"placeholder":Math.floor(SugarCube.State.variables.fame[fame[i].toLowerCase()])
+				},
+				DoLETData
+			);
+			this.newElement(
+				"button",
+				{
+					"class":"dole-button",
+					"onclick":"DoLE.setSocial('fame', '"+fame[i].toLowerCase()+"', DoLE.el.input."+fame[i].toLowerCase()+".value)"
+				},
+				DoLETData,
+				name
+			);
+		}
 	},
 	"newElement":function(type, attrs, appendTo, text=null){ // Create new DOM elements
 		let el = document.createElement(type);
@@ -439,7 +530,7 @@ const DoLE = {
 		money = money*100;
 		let oldmoney = SugarCube.State.variables.money;
 
-		SugarCube.State.variables.money=money;
+		SugarCube.State.variables.money = Math.max(money, 0);
 
 		console.log("Money set from £"+(oldmoney*0.01)+" to £"+(SugarCube.State.variables.money*0.01));
 
@@ -479,7 +570,7 @@ const DoLE = {
 
 		 let oldval = SugarCube.State.variables[tfval[tf]];
 
-		 SugarCube.State.variables[tfval[tf]] = Math.floor(value);
+		 SugarCube.State.variables[tfval[tf]] = Math.max(Math.floor(value), 0);
 
 		 console.log(tf+" set from "+oldval+" to "+value+" and now it's "+SugarCube.State.variables[tfval[tf]]);
 
@@ -493,6 +584,14 @@ const DoLE = {
 			console.log(npc+" "+stat+" set from "+oldval+" to "+val+" and now it's "+SugarCube.State.variables["wolfpack"+stat]);
 
 			this.confirm(this.el.input[npc+stat], val, false);
+		} else if(npc === "fame"){
+			let oldval = SugarCube.State.variables.fame[stat];
+			val = Math.max(Math.min(Math.floor(val), 2000), 0); // Clamp 0-2000
+			SugarCube.State.variables.fame[stat] = val;
+
+			console.log(npc+" "+stat+" set from "+oldval+" to "+val+" and now it's "+SugarCube.State.variables.fame[stat]);
+
+			this.confirm(this.el.input[stat], val, true);
 		}
 	}
 };
