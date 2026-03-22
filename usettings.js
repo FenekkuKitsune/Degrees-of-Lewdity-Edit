@@ -13,7 +13,7 @@ const DoLE = {
 	},
 	"versions":{
 		"game":"0.5.8.10", // Supported game version
-		"DoLE":"0.22" // DoLE Version
+		"DoLE":"0.23" // DoLE Version
 	},
 	"_init":function(){ // Init, run on page load.
 		// Version checking
@@ -304,48 +304,30 @@ const DoLE = {
 		this.el.tabs[3].appendChild(document.createTextNode("Social"));
 
 		let DoLETable = this.newElement("table", {"class":"dole-table"}, this.el.contents[3]);
-
 		let DoLETBody = this.newElement("tbody", {}, DoLETable);
-
 		let DoLETRow = this.newElement("tr", {"class":"dole-tr"}, DoLETBody);
 
 		// Wolfpack harmony
 		let DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 
-		// Apparently harmony/ferocity is between 0-20, 0-100%, but it can go above 20
-		this.input.soc.wolf.harmony.r = this.newElement(
+		this.el.input.wolfpackharmony = this.newElement(
 			"input",
 			{
-				"name":"DolEWolfHarmonyRange",
+				"name":"DoLEWolfHarmony",
 				"type":"range",
 				"class":"dole-range",
 				"min":"0",
-				"step":"5",
-				"max":"100",
-				"value":Math.floor(((SugarCube.State.variables.wolfpackharmony)/20)*100),
-				"oninput":"DoLE.input.soc.wolf.harmony.t.value = this.value",
-				"onchange":"DoLE.input.soc.wolf.harmony.t.value = this.value"
+				"step":"1",
+				"max":"20",
+				"value":Math.floor(SugarCube.State.variables.wolfpackharmony)
 			},
 			DoLETData
 		);
-		this.input.soc.wolf.harmony.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEWolfHarmonyText",
-				"type":"text",
-				"inputmode":"text",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(((SugarCube.State.variables.wolfpackharmony)/20)*100),
-				"oninput":"DoLE.input.soc.wolf.harmony.r.value = this.value",
-				"onchange":"DoLE.input.soc.wolf.harmony.r.value = this.value"
-			},
-			DoLETData
-		);
-		let DoLEButton = this.newElement(
+		this.newElement(
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setSocial('wolfpack', 'harmony')"
+				"onclick":"DoLE.setSocial('wolfpack', 'harmony', DoLE.el.input.wolfpackharmony.value)"
 			},
 			DoLETData,
 			"Wolf Harmony"
@@ -354,42 +336,27 @@ const DoLE = {
 		// Wolfpack ferocity
 		DoLETData = this.newElement("td", {"class":"dole-td"}, DoLETRow);
 
-		this.input.soc.wolf.ferocity.r = this.newElement(
+		this.el.input.wolfpackferocity = this.newElement(
 			"input",
 			{
-				"name":"DoLEWolfFerocityRange",
+				"name":"DoLEWolfFerocity",
 				"type":"range",
 				"class":"dole-range",
 				"min":"0",
-				"step":"5",
-				"max":"100",
-				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
-				"oninput":"DoLE.input.soc.wolf.ferocity.t.value = this.value",
-				"onchange":"DoLE.input.soc.wolf.ferocity.t.value = this.value"
+				"step":"1",
+				"max":"20",
+				"value":Math.floor(SugarCube.State.variables.wolfpackferocity)
 			},
-			DoLETData
+			DoLETData,
 		);
-		this.input.soc.wolf.ferocity.t = this.newElement(
-			"input",
-			{
-				"name":"DoLEWolfFerocityText",
-				"type":"text",
-				"inputmode":"text",
-				"class":"macro-textbox dole-textbox",
-				"value":Math.floor(((SugarCube.State.variables.wolfpackferocity)/20)*100),
-				"oninput":"DoLE.input.soc.wolf.ferocity.r.value = this.value",
-				"onchange":"DoLE.input.soc.wolf.ferocity.r.value = this.value"
-			},
-			DoLETData
-		);
-		DoLEButton = this.newElement(
+		this.newElement(
 			"button",
 			{
 				"class":"dole-button",
-				"onclick":"DoLE.setSocial('wolfpack', 'ferocity')"
+				"onclick":"DoLE.setSocial('wolfpack', 'ferocity', DoLE.el.input.wolfpackferocity.value)"
 			},
 			DoLETData,
-			"Wolf Ferocity"
+			"Wolf Ferocity",
 		);
 	},
 	"newElement":function(type, attrs, appendTo, text=null){ // Create new DOM elements
@@ -518,23 +485,15 @@ const DoLE = {
 
 		 this.confirm(this.el.input[tf], value, true);
 	},
-	"setSocial":function(npc, stat){ // Set social stats
-		let vanval = { // These are values translated for Sugarcube
-			"harmony":"wolfpackharmony",
-			"ferocity":"wolfpackferocity"
-		};
+	"setSocial":function(npc, stat, val){ // Set social stats
+		if(npc === "wolfpack"){
+			let oldval = SugarCube.State.variables["wolfpack"+stat];
+			SugarCube.State.variables["wolfpack"+stat] = val;
 
-		let val = 0;
-		let oldval = 0;
-		if (npc==="wolfpack") {
-			// Pack harmony/ferocity is from 0-20+
-			val = 20*(this.input.soc.wolf[stat].t.value/100);
-			oldval = SugarCube.State.variables[vanval[stat]];
+			console.log(npc+" "+stat+" set from "+oldval+" to "+val+" and now it's "+SugarCube.State.variables["wolfpack"+stat]);
+
+			this.confirm(this.el.input[npc+stat], val, false);
 		}
-
-		SugarCube.State.variables[vanval[stat]] = val;
-
-		alert("Wolfpack "+stat+": "+Math.floor((oldval/20)*100)+"% is now "+Math.floor((val/20)*100)+"%\nValues above 100% will not display, but do affect gains/losses");
 	}
 };
 
