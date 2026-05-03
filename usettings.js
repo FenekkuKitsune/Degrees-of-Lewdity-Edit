@@ -12,7 +12,7 @@ const DoLE = {
 		}
 	},
 	"versions":{
-		"game":"0.5.8.10", // Supported game version
+		"game":"0.5.9.7", // Supported game version
 		"DoLE":"0.24" // DoLE Version
 	},
 	"_init":function(){ // Init, run on page load.
